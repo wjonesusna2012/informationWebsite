@@ -10,6 +10,6 @@ module.exports = {
     'react/forbid-prop-types': 'off',
     'no-restricted-syntax': 'off',
     'prefer-destructuring': ['error', { object: false, array: false }],
-    'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx'] }],
+    'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx', '.ts', '.tsx'] }],
   },
 };
