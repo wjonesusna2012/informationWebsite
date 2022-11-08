@@ -1,16 +1,8 @@
-import { CardContent, CardHeader, TextField, Card } from '@mui/material';
+import { CardContent, CardHeader, TextField, Card, Typography } from '@mui/material';
+import Button from '@mui/material/Button';
+import Stack from '@mui/material/Stack';
 import React, { useEffect, useState } from 'react';
-
-interface AnchorInputProps {
-  anchorLink: string;
-  setAnchorLink: (newAnchorLink: string) => void;
-}
-
-interface AnchorState {
-  imgSrc: string;
-  description: string;
-  title: string;
-}
+import { AnchorState, AnchorInputProps } from './interfaces';
 
 const AnchorInputAndPreview: React.FC<AnchorInputProps> = ({
   anchorLink,
@@ -23,7 +15,7 @@ const AnchorInputAndPreview: React.FC<AnchorInputProps> = ({
   });
   useEffect(() => {
     const params = {
-      url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
+      url: anchorLink, 
     };
     const proxyUrl = new URL('http://localhost:3001/proxy/og/');
     proxyUrl.search = new URLSearchParams(params).toString();
@@ -48,18 +40,19 @@ const AnchorInputAndPreview: React.FC<AnchorInputProps> = ({
   }, [anchorLink]);
   return (
     <>
-      <TextField label="Link" placeholder="Enter Link">
-        {anchorLink}
-      </TextField>
-      <Card>
-        <CardHeader title={previewState.title}></CardHeader>
-        <CardContent>{previewState.description}</CardContent>
+      <Stack spacing={2} direction="row">
+        <TextField label="Link" placeholder="Enter Link" value={anchorLink}/>
+        <Button variant="contained">Add</Button>
+      </Stack>
+      <Stack>
+        <Typography variant='h6'>{previewState.title}</Typography>
+        <Typography variant='body1'>{previewState.description}</Typography>
         <img
           src={previewState.imgSrc}
           alt={`${previewState.title}`}
           style={{ maxHeight: 200 }}
         />
-      </Card>
+      </Stack>
     </>
   );
 };

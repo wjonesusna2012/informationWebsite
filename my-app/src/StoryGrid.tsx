@@ -1,10 +1,8 @@
 import * as React from 'react';
 import Grid from '@mui/material/Grid';
-import TopicCard, { TopicCardProps } from './TopicCard';
+import TopicCard  from './TopicCard';
+import { StoryGridProps } from './interfaces';
 
-export interface StoryGridProps {
-  cardArray: Array<TopicCardProps>;
-}
 
 const StoryGrid: React.FC<StoryGridProps> = ({ cardArray }) => {
   return (

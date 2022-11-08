@@ -15,6 +15,9 @@ import { DateTime } from 'luxon';
 import { ImageList, ImageListItem, ImageListItemBar } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
+import StoryIcon from '@mui/icons-material/AutoStoriesRounded';
+import AnchorInputAndPreview from './AnchorInputAndPreview';
+
 function PaperComponent(props: PaperProps) {
   return (
     <Draggable
@@ -52,7 +55,7 @@ export default function DraggableDialog() {
       </DialogTitle>
       <DialogContent>
         <Stack spacing={6}>
-          <TextField margin="normal" label="Enter Title:"></TextField>
+          <TextField margin="normal" label="Story Title"></TextField>
           <LocalizationProvider dateAdapter={AdapterLuxon}>
             <DesktopDatePicker
               label="Date"
@@ -121,13 +124,14 @@ export default function DraggableDialog() {
               ))}
             </ImageList>
           )}
+          <AnchorInputAndPreview anchorLink="" setAnchorLink={() => {}} />
         </Stack>
       </DialogContent>
       <DialogActions>
-        <Button autoFocus onClick={() => {}}>
+        <Button autoFocus variant="outlined" onClick={() => {}}>
           Cancel
         </Button>
-        <Button onClick={() => {}}>Add Story</Button>
+        <Button variant="contained" onClick={() => {}} endIcon={<StoryIcon />}>Add</Button>
       </DialogActions>
     </Dialog>
   );

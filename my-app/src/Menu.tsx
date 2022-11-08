@@ -1,12 +1,8 @@
 import * as React from 'react';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import { MenuInterface } from './interfaces';
 
-interface MenuInterface {
-  anchorElement: HTMLElement | null;
-  open: boolean;
-  closeHandler: () => void;
-}
 const NavMenu: React.FC<MenuInterface> = ({
   open,
   anchorElement,
