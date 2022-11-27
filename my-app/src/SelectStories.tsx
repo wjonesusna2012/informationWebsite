@@ -27,8 +27,8 @@ const SelectedStories = ({selectedStories}: {selectedStories: Array<TopicCardPro
 
 const SelectStoriesCarousel = ({selectedStories, storiesCurrentlyDisplayed}: { selectedStories: Array<TopicCardProps>, storiesCurrentlyDisplayed: Array<TopicCardProps>}) => {
   return (
-    <Grid container>
-      {storiesCurrentlyDisplayed.map(sCD => {
+    <Grid container spacing={2}>
+      {storiesCurrentlyDisplayed.map((sCD, i) => {
         return (
           <Grid item xs={6} md={4} xl={3}>
             <TopicCard {...sCD} />
@@ -48,9 +48,13 @@ const SelectStories = ({availableStories}: SelectStoriesProps) => {
   return (
     <>
       <SelectedStories selectedStories={selected} />
-      <SelectStoriesCarousel selectedStories={selected} storiesCurrentlyDisplayed={availableStories} />
-      <Pagination count={pages} page={page} onChange={(e, val) => {console.log(val);
-        setPage(val);}} />
+      <SelectStoriesCarousel 
+        selectedStories={selected} 
+        storiesCurrentlyDisplayed={
+          availableStories.filter((val, i) => i < page * storiesPerGrid && i >= (page - 1) * storiesPerGrid)
+        } 
+      />
+      <Pagination count={pages} page={page} onChange={(e, val) => setPage(val)} />
     </>
   )
 };
