@@ -11,14 +11,21 @@ const TopicCard = ({
   headerTitle,
   postTitle,
   summary,
-  date
+  date,
+  selected
 }: TopicCardProps) => {
   const [loaded, setLoaded] = useState(false);
   return (
-    <Card variant="outlined" sx={{ maxWidth: 500 }}>
+    <Card
+      variant="outlined"
+      sx={{
+        maxWidth: 500,
+        ...(selected ? { border: 3, borderColor: 'primary.main' } : {})
+      }}
+    >
       <CardMedia
         component="img"
-        image="https://picsum.photos/200/100"
+        image="https://picsum.photos/100/100"
         alt="Test Alt Text"
         onLoad={() => {
           setLoaded(true);
@@ -29,7 +36,7 @@ const TopicCard = ({
         component="img"
         image="web.png"
         alt="Test Alt Text"
-        style={loaded ? { display: 'none' } : { width: '100%', maxHeight: 250 }}
+        style={loaded ? { display: 'none' } : {}}
       />
       <CardContent>
         <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>

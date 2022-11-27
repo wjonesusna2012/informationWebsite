@@ -1,4 +1,4 @@
-import { CardContent, CardHeader, TextField, Card, Typography } from '@mui/material';
+import { TextField, Typography } from '@mui/material';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import React, { useEffect, useState } from 'react';
@@ -15,7 +15,7 @@ const AnchorInputAndPreview: React.FC<AnchorInputProps> = ({
   });
   useEffect(() => {
     const params = {
-      url: anchorLink, 
+      url: anchorLink
     };
     const proxyUrl = new URL('http://localhost:3001/proxy/og/');
     proxyUrl.search = new URLSearchParams(params).toString();
@@ -41,12 +41,12 @@ const AnchorInputAndPreview: React.FC<AnchorInputProps> = ({
   return (
     <>
       <Stack spacing={2} direction="row">
-        <TextField label="Link" placeholder="Enter Link" value={anchorLink}/>
+        <TextField label="Link" placeholder="Enter Link" value={anchorLink} />
         <Button variant="contained">Add</Button>
       </Stack>
       <Stack>
-        <Typography variant='h6'>{previewState.title}</Typography>
-        <Typography variant='body1'>{previewState.description}</Typography>
+        <Typography variant="h6">{previewState.title}</Typography>
+        <Typography variant="body1">{previewState.description}</Typography>
         <img
           src={previewState.imgSrc}
           alt={`${previewState.title}`}

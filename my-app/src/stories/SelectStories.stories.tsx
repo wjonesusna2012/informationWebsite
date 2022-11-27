@@ -20,6 +20,7 @@ const Template: ComponentStory<typeof SelectStories> = (args) => (
 
 export const GenericGrid = Template.bind({});
 const genericArgs = {
+  id: 0,
   headerTitle: 'Featured',
   postTitle: 'This is a test post title',
   summary:
@@ -27,12 +28,35 @@ const genericArgs = {
   date: 'September 21, 2021'
 };
 
-const range = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+const range = [
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18,
+  19,
+  20
+];
 const args = {
   availableStories: range.map<TopicCardProps>((r) => {
     return {
       ...genericArgs,
-      headerTitle: `Featured ${r}`
+      id: r,
+      headerTitle: `Featured ${r}`,
+      selected: r % 2 === 0
     };
   })
 };
