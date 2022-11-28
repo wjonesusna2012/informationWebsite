@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import _ from 'lodash';
 import Pagination from '@mui/material/Pagination';
 import { SelectStoriesProps, TopicCardProps } from './interfaces';
 import Accordion from '@mui/material/Accordion';
@@ -44,7 +45,7 @@ const SelectStoriesCarousel = ({
   selectedStories,
   storiesCurrentlyDisplayed
 }: {
-  selectedStories: Array<TopicCardProps>;
+  selectedStories: Array<number>;
   storiesCurrentlyDisplayed: Array<TopicCardProps>;
 }) => {
   return (
@@ -63,11 +64,17 @@ const SelectStories = ({ availableStories }: SelectStoriesProps) => {
   const storiesPerGrid = 6;
   const pages = Math.ceil(availableStories.length / storiesPerGrid);
 
-  const [selected, setSelected] = useState<Array<TopicCardProps>>([]);
+  const [selected, setSelected] = useState<Array<number>>([]);
   const [page, setPage] = useState<number>(1);
   return (
     <>
-      <SelectedStories selectedStories={selected} />
+      <SelectedStories
+        selectedStories={_.intersectionWith(
+          availableStories,
+          selected,
+          (avail, sel) => sel === avail.id
+        )}
+      />
       <SelectStoriesCarousel
         selectedStories={selected}
         storiesCurrentlyDisplayed={availableStories}
@@ -76,7 +83,6 @@ const SelectStories = ({ availableStories }: SelectStoriesProps) => {
         count={pages}
         page={page}
         onChange={(e, val) => {
-          console.log(val);
           setPage(val);
         }}
       />

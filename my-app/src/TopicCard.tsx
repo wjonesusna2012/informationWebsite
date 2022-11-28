@@ -25,7 +25,7 @@ const TopicCard = ({
     >
       <CardMedia
         component="img"
-        image="https://picsum.photos/100/100"
+        image="https://picsum.photos/500/500"
         alt="Test Alt Text"
         onLoad={() => {
           setLoaded(true);
