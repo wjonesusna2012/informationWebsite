@@ -1,7 +1,7 @@
 import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 import StoryGrid from '../StoryGrid';
-import { TopicCardProps } from '../interfaces/index';
+import { TopicCardProps, TopicCardData } from '../interfaces/index';
 import SelectStories from '../SelectStories';
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
@@ -51,7 +51,7 @@ const range = [
   20
 ];
 const args = {
-  availableStories: range.map<TopicCardProps>((r) => {
+  availableStories: range.map<TopicCardData>((r) => {
     return {
       ...genericArgs,
       id: r,

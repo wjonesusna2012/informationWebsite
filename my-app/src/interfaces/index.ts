@@ -24,7 +24,7 @@ export interface MenuInterface {
 }
 
 export interface SelectStoriesProps {
-  availableStories: Array<TopicCardProps>;
+  availableStories: Array<TopicCardData>;
 }
 
 export interface TopicCardProps {
@@ -34,6 +34,14 @@ export interface TopicCardProps {
   summary: string;
   date: string;
   selected: boolean;
+  toggleStory: (storyID: number) => void;
+}
+export interface TopicCardData {
+  id: number;
+  headerTitle: string;
+  postTitle: string;
+  summary: string;
+  date: string;
 }
 
 export interface StoryGridProps {

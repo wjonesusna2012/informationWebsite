@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import _ from 'lodash';
 import Pagination from '@mui/material/Pagination';
-import { SelectStoriesProps, TopicCardProps } from './interfaces';
+import { SelectStoriesProps, TopicCardData } from './interfaces';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
@@ -25,7 +25,7 @@ const SelectedStoryAccoridan = ({
 const SelectedStories = ({
   selectedStories
 }: {
-  selectedStories: Array<TopicCardProps>;
+  selectedStories: Array<TopicCardData>;
 }) => {
   return (
     <>
@@ -43,17 +43,23 @@ const SelectedStories = ({
 
 const SelectStoriesCarousel = ({
   selectedStories,
-  storiesCurrentlyDisplayed
+  storiesCurrentlyDisplayed,
+  toggleStory
 }: {
   selectedStories: Array<number>;
-  storiesCurrentlyDisplayed: Array<TopicCardProps>;
+  storiesCurrentlyDisplayed: Array<TopicCardData>;
+  toggleStory: (storyID: number) => void;
 }) => {
   return (
     <Grid container spacing={1}>
       {storiesCurrentlyDisplayed.map((sCD) => {
         return (
           <Grid item xs={6} md={4} xl={3}>
-            <TopicCard {...sCD} />
+            <TopicCard
+              {...sCD}
+              toggleStory={toggleStory}
+              selected={selectedStories.includes(sCD.id)}
+            />
           </Grid>
         );
       })}
@@ -66,6 +72,14 @@ const SelectStories = ({ availableStories }: SelectStoriesProps) => {
 
   const [selected, setSelected] = useState<Array<number>>([]);
   const [page, setPage] = useState<number>(1);
+
+  const toggleStory: (storyID: number) => void = (storyID) => {
+    if (selected.includes(storyID)) {
+      setSelected(selected.filter((s) => s !== storyID));
+    } else {
+      setSelected([...selected, storyID]);
+    }
+  };
   return (
     <>
       <SelectedStories
@@ -77,7 +91,11 @@ const SelectStories = ({ availableStories }: SelectStoriesProps) => {
       />
       <SelectStoriesCarousel
         selectedStories={selected}
-        storiesCurrentlyDisplayed={availableStories}
+        storiesCurrentlyDisplayed={availableStories.filter(
+          (a) =>
+            a.id > (page - 1) * storiesPerGrid && a.id <= page * storiesPerGrid
+        )}
+        toggleStory={toggleStory}
       />
       <Pagination
         count={pages}

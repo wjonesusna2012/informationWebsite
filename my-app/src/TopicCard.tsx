@@ -8,11 +8,13 @@ import Typography from '@mui/material/Typography';
 import { TopicCardProps } from './interfaces';
 
 const TopicCard = ({
+  id,
   headerTitle,
   postTitle,
   summary,
   date,
-  selected
+  selected,
+  toggleStory
 }: TopicCardProps) => {
   const [loaded, setLoaded] = useState(false);
   return (
@@ -20,8 +22,9 @@ const TopicCard = ({
       variant="outlined"
       sx={{
         maxWidth: 500,
-        ...(selected ? { border: 3, borderColor: 'primary.main' } : {})
+        ...(selected ? { border: 2, borderColor: 'primary.main' } : {})
       }}
+      onClick={(e) => toggleStory(id)}
     >
       <CardMedia
         component="img"
