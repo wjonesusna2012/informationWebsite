@@ -13,6 +13,7 @@ const NavMenu: React.FC<MenuInterface> = ({
     anchorEl={anchorElement}
     open={open}
     onClose={closeHandler}
+    variant='menu'
   >
     <MenuItem>Create New Narrative</MenuItem>
     <MenuItem>View All Narratives</MenuItem>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import _ from 'lodash';
 import Pagination from '@mui/material/Pagination';
+import TablePagination from '@mui/material/TablePagination';
 import { SelectStoriesProps, TopicCardData } from './interfaces';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
@@ -67,11 +68,11 @@ const SelectStoriesCarousel = ({
   );
 };
 const SelectStories = ({ availableStories }: SelectStoriesProps) => {
-  const storiesPerGrid = 6;
-  const pages = Math.ceil(availableStories.length / storiesPerGrid);
 
   const [selected, setSelected] = useState<Array<number>>([]);
-  const [page, setPage] = useState<number>(1);
+  const [page, setPage] = useState<number>(0);
+  const [rowsPerPage, setRowsPerPage] = useState<number>(12);
+  const pages = Math.ceil(availableStories.length / rowsPerPage);
 
   const toggleStory: (storyID: number) => void = (storyID) => {
     if (selected.includes(storyID)) {
@@ -93,16 +94,23 @@ const SelectStories = ({ availableStories }: SelectStoriesProps) => {
         selectedStories={selected}
         storiesCurrentlyDisplayed={availableStories.filter(
           (a) =>
-            a.id > (page - 1) * storiesPerGrid && a.id <= page * storiesPerGrid
+            (a.id > (page) * rowsPerPage && a.id <= (page + 1) * rowsPerPage) || rowsPerPage === -1
         )}
         toggleStory={toggleStory}
       />
-      <Pagination
-        count={pages}
+      <TablePagination
+        count={availableStories.length}
         page={page}
-        onChange={(e, val) => {
+        onPageChange={(_e, val) => {
           setPage(val);
         }}
+        rowsPerPageOptions={[12, 24, 48, { value: -1, label: 'All'}]}
+        rowsPerPage={rowsPerPage}
+        onRowsPerPageChange={e => {
+          setPage(0);
+          setRowsPerPage(parseInt(e.target.value, 10));
+        }}
+        
       />
     </>
   );

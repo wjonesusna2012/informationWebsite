@@ -18,14 +18,15 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import StoryIcon from '@mui/icons-material/AutoStoriesRounded';
 import AnchorInputAndPreview from './AnchorInputAndPreview';
 
+const DraggableAny: any = Draggable;
 function PaperComponent(props: PaperProps) {
   return (
-    <Draggable
+    <DraggableAny
       handle="#draggable-dialog-title"
       cancel={'[class*="MuiDialogContent-root"]'}
     >
       <Paper {...props} />
-    </Draggable>
+    </DraggableAny>
   );
 }
 

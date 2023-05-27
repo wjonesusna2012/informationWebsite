@@ -9,14 +9,18 @@ import Paper, { PaperProps } from '@mui/material/Paper';
 import Draggable from 'react-draggable';
 import TextField from '@mui/material/TextField';
 import SpinIcon from '@mui/icons-material/Bolt'
+
+// Do this as there is a bug with @types/react dependency for this package.
+const DraggableAny: any = Draggable;
 function PaperComponent(props: PaperProps) {
   return (
-    <Draggable
+    <DraggableAny
+      axis='both'
       handle="#draggable-dialog-title"
       cancel={'[class*="MuiDialogContent-root"]'}
     >
       <Paper {...props} />
-    </Draggable>
+    </DraggableAny>
   );
 }
 

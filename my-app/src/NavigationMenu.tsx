@@ -45,9 +45,10 @@ const NavigationMenu = () => {
           </Typography>
           <Autocomplete
             disablePortal
+            multiple
             id="combo-box-demo"
             options={['Abracadabra', 'Banana', 'Celsius', 'Elephant']}
-            sx={{ width: 300 }}
+            sx={{ width: 300, padding: 1 }}
             renderInput={(params) => (
               <TextField
                 {...params}

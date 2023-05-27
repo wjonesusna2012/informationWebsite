@@ -1,58 +1,55 @@
-import { TextField, Typography } from '@mui/material';
+import { Alert, AlertTitle, CircularProgress, TextField, Typography } from '@mui/material';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
-import React, { useEffect, useState } from 'react';
-import { AnchorState, AnchorInputProps } from './interfaces';
+import React from 'react';
+import { AnchorInputProps } from './interfaces';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { Warning } from '@mui/icons-material';
+import axios, { AxiosError } from 'axios';
 
 const AnchorInputAndPreview: React.FC<AnchorInputProps> = ({
   anchorLink,
   setAnchorLink
 }) => {
-  const [previewState, setPreviewState] = useState<AnchorState>({
-    imgSrc: '',
-    description: '',
-    title: ''
-  });
-  useEffect(() => {
-    const params = {
-      url: anchorLink
-    };
-    const proxyUrl = new URL('http://localhost:3001/proxy/og/');
-    proxyUrl.search = new URLSearchParams(params).toString();
-    fetch(proxyUrl, {})
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        const { description, title, image } = data;
-        setPreviewState({
-          imgSrc: image,
-          description,
-          title
-        });
+  const queryClient = useQueryClient();
+
+  const { isLoading, error, data } = useQuery({
+    enabled: anchorLink !== '',
+    queryKey: ['ImagePreview', anchorLink],
+    queryFn: () => {
+      const params = {
+        url: anchorLink
+      };
+      const proxyUrl = new URL('http://localhost:3001/proxy/og/');
+      return axios.get(proxyUrl.toString(), {
+        params
       })
-      .catch((reason) => {
-        setPreviewState({
-          imgSrc: '',
-          description: 'ERROR in pinging',
-          title: 'ERROR'
-        });
-      });
-  }, [anchorLink]);
+    },
+  })
   return (
     <>
       <Stack spacing={2} direction="row">
         <TextField label="Link" placeholder="Enter Link" value={anchorLink} />
         <Button variant="contained">Add</Button>
       </Stack>
-      <Stack>
-        <Typography variant="h6">{previewState.title}</Typography>
-        <Typography variant="body1">{previewState.description}</Typography>
-        <img
-          src={previewState.imgSrc}
-          alt={`${previewState.title}`}
-          style={{ maxHeight: 200 }}
-        />
-      </Stack>
+      {isLoading && <CircularProgress />}
+      {error && (
+        <Alert severity='error' icon={<Warning />}>
+          <AlertTitle>Error in Fetching</AlertTitle>
+          {(error as AxiosError)?.message ?? ''}
+        </Alert>
+      )}
+      {!isLoading && !error && (
+        <Stack>
+          <Typography variant="h6">{data?.data?.title ?? ''}</Typography>
+          <Typography variant="body1">{data?.data?.description ?? ''}</Typography>
+          <img
+            src={data?.data?.imgSrc ?? ''}
+            alt={`${data?.data?.title ?? 'Not Found'}`}
+            style={{ maxHeight: 200 }}
+          />
+        </Stack>
+      )}
     </>
   );
 };
