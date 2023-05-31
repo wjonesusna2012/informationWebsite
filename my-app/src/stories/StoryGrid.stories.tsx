@@ -23,12 +23,14 @@ const genericArgs = {
   postTitle: 'This is a test post title',
   summary:
     'Lorem Ipsum Doelr sit net amit. Filler text to make this go on forever',
-  date: 'September 21, 2021'
+  date: 'September 21, 2021',
+  selected: false,
+  toggleStory: () => {},
 };
 
 const range = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 const args = {
-  cardArray: range.map<TopicCardProps>((r) => {
+  cardArray: range.map((r) => {
     return {
       ...genericArgs,
       headerTitle: `Featured ${r}`

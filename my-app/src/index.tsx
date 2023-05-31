@@ -1,12 +1,35 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import './index.css';
-import App from './App';
+import Root from './App';
 import reportWebVitals from './reportWebVitals';
+import AddNarrativeDialog from './AddNarrativeDialog'; 
+import AddStoryDialog from './AddStoryDialog';
+
+const router = createBrowserRouter([
+  {
+    Component: Root,
+    children: [
+      {
+        path: '/',
+        Component: () =>  <h1>Insert here</h1>,
+      },
+      {
+        path: '/narrative',
+        Component: AddNarrativeDialog,
+      },
+      {
+        path: '/story',
+        Component: AddStoryDialog,
+      }
+    ]
+  }
+])
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <RouterProvider router={router}/>
   </React.StrictMode>,
   document.getElementById('root')
 );

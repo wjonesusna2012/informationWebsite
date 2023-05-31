@@ -34,9 +34,10 @@ export default function DraggableDialog() {
   const [postDate, setPostDate] = React.useState<DateTime | null>(
     DateTime.now()
   );
-  const [summary, setSummary] = React.useState<String>('');
+  const [summary, setSummary] = React.useState<string>('');
   const [fileDialogOpen, setFileDialogOpen] = React.useState<boolean>(true);
-  const [filesSaved, setFilesSaved] = React.useState<Array<String>>([]);
+  const [filesSaved, setFilesSaved] = React.useState<Array<string>>([]);
+  const [anchorLink, setAnchorLink]= React.useState<string>('')
   React.useEffect(() => {
     console.log(filesSaved);
   }, [filesSaved]);
@@ -88,7 +89,6 @@ export default function DraggableDialog() {
               onChange={(event) => {
                 if (event !== undefined) {
                   const fileList = event!.target!.files;
-                  console.log(fileList);
                   const fileArray = [];
                   for (let i = 0; i < fileList!.length; i++) {
                     fileArray.push(
@@ -125,7 +125,9 @@ export default function DraggableDialog() {
               ))}
             </ImageList>
           )}
-          <AnchorInputAndPreview anchorLink="" setAnchorLink={() => {}} />
+          <AnchorInputAndPreview anchorLink={anchorLink} setAnchorLink={(l) => {
+            setAnchorLink(l)
+          }} />
         </Stack>
       </DialogContent>
       <DialogActions>

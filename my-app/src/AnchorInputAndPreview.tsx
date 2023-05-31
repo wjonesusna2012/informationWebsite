@@ -13,7 +13,7 @@ const AnchorInputAndPreview: React.FC<AnchorInputProps> = ({
 }) => {
   const queryClient = useQueryClient();
 
-  const { isLoading, error, data } = useQuery({
+  const { isLoading, error, data, fetchStatus } = useQuery({
     enabled: anchorLink !== '',
     queryKey: ['ImagePreview', anchorLink],
     queryFn: () => {
@@ -30,9 +30,9 @@ const AnchorInputAndPreview: React.FC<AnchorInputProps> = ({
     <>
       <Stack spacing={2} direction="row">
         <TextField label="Link" placeholder="Enter Link" value={anchorLink} />
-        <Button variant="contained">Add</Button>
+        <Button variant="contained" onClick={l => setAnchorLink('')}>Add</Button>
       </Stack>
-      {isLoading && <CircularProgress />}
+      {isLoading && fetchStatus === 'fetching' && <CircularProgress />}
       {error && (
         <Alert severity='error' icon={<Warning />}>
           <AlertTitle>Error in Fetching</AlertTitle>

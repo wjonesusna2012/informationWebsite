@@ -2,6 +2,7 @@ import * as React from 'react';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { MenuInterface } from './interfaces';
+import { Link } from 'react-router-dom';
 
 const NavMenu: React.FC<MenuInterface> = ({
   open,
@@ -15,9 +16,21 @@ const NavMenu: React.FC<MenuInterface> = ({
     onClose={closeHandler}
     variant='menu'
   >
-    <MenuItem>Create New Narrative</MenuItem>
-    <MenuItem>View All Narratives</MenuItem>
-    <MenuItem>Share Your Narrative</MenuItem>
+    <MenuItem>
+      <Link to='/'>
+        Create New Narrative
+      </Link>
+    </MenuItem>
+    <MenuItem>
+      <Link to='/'>
+        View Narratives
+      </Link>
+    </MenuItem>
+    <MenuItem>
+      <Link to='/'>
+        Share Narratives
+      </Link>
+    </MenuItem>
   </Menu>
 );
 

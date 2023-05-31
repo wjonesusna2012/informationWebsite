@@ -17,12 +17,18 @@ export default {
 const Template: ComponentStory<typeof CardAccordion> = (args) => (
 <CardAccordion {...args}>
   <TopicCard
+    id={1}
+    selected={false}
+    toggleStory={() => {}}
     headerTitle='Title 1'
     postTitle='Post Title 1'
     summary='Lorem Ipsum Delr sit net amit.'
     date='September 21, 2022' 
   />
   <TopicCard
+    id={2}
+    selected
+    toggleStory={() => {}}
     headerTitle='Title 2'
     postTitle='Post Title 2'
     summary='Lorem Ipsum Delr sit net amit.'
