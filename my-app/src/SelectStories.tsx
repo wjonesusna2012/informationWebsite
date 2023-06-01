@@ -72,7 +72,6 @@ const SelectStories = ({ availableStories }: SelectStoriesProps) => {
   const [selected, setSelected] = useState<Array<number>>([]);
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(12);
-  const pages = Math.ceil(availableStories.length / rowsPerPage);
 
   const toggleStory: (storyID: number) => void = (storyID) => {
     if (selected.includes(storyID)) {

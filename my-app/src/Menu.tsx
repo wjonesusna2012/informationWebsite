@@ -17,7 +17,7 @@ const NavMenu: React.FC<MenuInterface> = ({
     variant='menu'
   >
     <MenuItem>
-      <Link to='/'>
+      <Link to='/narrative'>
         Create New Narrative
       </Link>
     </MenuItem>
@@ -29,6 +29,11 @@ const NavMenu: React.FC<MenuInterface> = ({
     <MenuItem>
       <Link to='/'>
         Share Narratives
+      </Link>
+    </MenuItem>
+    <MenuItem>
+      <Link to='/story'>
+        Create Story 
       </Link>
     </MenuItem>
   </Menu>

@@ -33,6 +33,7 @@ const args = {
   cardArray: range.map((r) => {
     return {
       ...genericArgs,
+      id: r,
       headerTitle: `Featured ${r}`
     };
   })

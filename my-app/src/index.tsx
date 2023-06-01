@@ -16,11 +16,11 @@ const router = createBrowserRouter([
         Component: () =>  <h1>Insert here</h1>,
       },
       {
-        path: '/narrative',
+        path: '/narratives',
         Component: AddNarrativeDialog,
       },
       {
-        path: '/story',
+        path: '/stories',
         Component: AddStoryDialog,
       }
     ]
