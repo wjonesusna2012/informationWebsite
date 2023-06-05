@@ -17,6 +17,7 @@ import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import StoryIcon from '@mui/icons-material/AutoStoriesRounded';
 import AnchorInputAndPreview from './AnchorInputAndPreview';
+import RHFTextField from './RHFTextField';
 
 const DraggableAny: any = Draggable;
 function PaperComponent(props: PaperProps) {
@@ -38,9 +39,6 @@ export default function DraggableDialog() {
   const [fileDialogOpen, setFileDialogOpen] = React.useState<boolean>(true);
   const [filesSaved, setFilesSaved] = React.useState<Array<string>>([]);
   const [anchorLink, setAnchorLink]= React.useState<string>('')
-  React.useEffect(() => {
-    console.log(filesSaved);
-  }, [filesSaved]);
   return (
     <Dialog
       maxWidth="md"
@@ -56,7 +54,8 @@ export default function DraggableDialog() {
         Add Story
       </DialogTitle>
       <DialogContent>
-        <Stack spacing={6}>
+        <Stack spacing={3}>
+          <RHFTextField label="Story Title" name="title" />
           <TextField margin="normal" label="Story Title"></TextField>
           <LocalizationProvider dateAdapter={AdapterLuxon}>
             <DesktopDatePicker

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const addNarrativeResponseSchema = z.object({
+export const addNarrativeResponseSchema = z.object({
     _id: z.string(),
     title: z.string(),
     abbreviation: z.string(),

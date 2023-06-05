@@ -1,0 +1,9 @@
+{
+  "name": "@info/schemas",
+  "version": "1.0.0",
+  "description": "Schemas for front and backend communications",
+  "main": "index.ts",
+  "author": "William Jones",
+  "license": "MIT",
+  "private": true
+}

@@ -7,7 +7,7 @@ const ACCEPTED_IMAGE_TYPES = [
     'image/webp'
 ]
 
-const addStorySchema = z.object({
+export const addStorySchema = z.object({
     storyTitle: z.string(),
     date: z.date(),
     summary: z.string(),
@@ -20,5 +20,7 @@ const addStorySchema = z.object({
             ".jpg, .jpeg, .png and .webp files are accepted."
         ),
 });
+
+export type AddStoryType = z.infer<typeof addStorySchema>;
 
 export default addStorySchema;

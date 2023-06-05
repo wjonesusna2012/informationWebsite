@@ -2,10 +2,7 @@ import express from 'express';
 import axios from 'axios';
 import generateHTMLNodes, { extractMetaTagsFromHTMLRoot } from './htmlParser';
 import { createContext, router, publicProcedure } from './trpc';
-import addStorySchema from '../schemas/requests/addStory'
-import addStoryResponseSchema from '../schemas/responses/addStory'
-import addNarrativeResponseSchema from '../schemas/responses/addNarrative'
-import addNarrativeSchema from '../schemas/requests/addNarrative'
+import { addStorySchema, addStoryResponseSchema, addNarrativeSchema, addNarrativeResponseSchema } from '@info/schemas';
 import * as trpcExpress from '@trpc/server/adapters/express';
 
 const appRouter = router({
@@ -31,6 +28,7 @@ const appRouter = router({
         _id: 'Test ID',
         title: 'Title Test',
         summary: 'Lorem Ipsum I forget I don\'t have internet',
+        abbreviation: 'EXO2020',
         createdAt: new Date(),
         createdBy: 'Yours Truly',
       };

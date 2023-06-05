@@ -7,10 +7,12 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import Paper, { PaperProps } from '@mui/material/Paper';
 import Draggable from 'react-draggable';
-import TextField from '@mui/material/TextField';
 import SpinIcon from '@mui/icons-material/Bolt'
-import { useForm, FormProvider, useFormContext } from 'react-hook-form';
+import { useForm, FormProvider } from 'react-hook-form';
 import RHFTextField from './RHFTextField';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { AddNarrativeType, addNarrativeSchema } from '@info/schemas';
+import { trpc } from '.';
 
 // Do this as there is a bug with @types/react dependency for this package.
 const DraggableAny: any = Draggable;
@@ -27,9 +29,21 @@ function PaperComponent(props: PaperProps) {
 }
 
 export default function DraggableDialog() {
-  const [summary, setSummary] = React.useState<String>('');
   const [fileDialogOpen, setFileDialogOpen] = React.useState<boolean>(true);
-  const methods = useForm();
+  const addNarrativeMutation = trpc.addNarrative.useMutation();
+  const methods = useForm<AddNarrativeType>({
+    defaultValues: {
+      summary: '',
+      title: '',
+      abbreviation: '',
+    },
+    reValidateMode: 'onChange',
+    resolver: zodResolver(addNarrativeSchema),
+  });
+
+  const submitHandler = async (formData: AddNarrativeType) => {
+    addNarrativeMutation(formData);
+  }
 
   return (
     <Dialog
@@ -43,26 +57,17 @@ export default function DraggableDialog() {
       fullWidth
     >
       <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
-        Spin a Narrative
+        Create a Narrative
       </DialogTitle>
       <DialogContent>
         <FormProvider {...methods} >
           <Stack spacing={3}>
             <RHFTextField name="title" label="Narrative Title" />
-            <TextField margin="normal" label="Narrative Title"></TextField>
-            <TextField margin="normal" label="Narrative Label"></TextField>
-            <TextField
-              id="narrative-summary"
-              label="Narrative"
-              aria-describedby="story-summary-text"
-              value={summary}
-              multiline
-              minRows={10}
-              onChange={(e) => {
-                const { value } = e.target;
-                if (value.length <= 5000) setSummary(e.target.value);
-              }}
-            />
+            <RHFTextField name="abbreviation" label="Narrative Abbreviation (12 characters max)" />
+            <RHFTextField name="summary" label="Narrative Summary" textFieldSpecificProps={{
+              multiline: true,
+              minRows: 10,
+            }} />
           </Stack>
         </FormProvider>
       </DialogContent>
@@ -70,7 +75,7 @@ export default function DraggableDialog() {
         <Button variant="outlined" onClick={() => setFileDialogOpen(false)}>
           Cancel
         </Button>
-        <Button variant="contained" onClick={() => {}} endIcon={<SpinIcon />}>Spin</Button>
+        <Button variant="contained" onClick={methods.handleSubmit(submitHandler)} endIcon={<SpinIcon />}>Create</Button>
       </DialogActions>
     </Dialog>
   );

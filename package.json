@@ -1,12 +1,16 @@
 {
   "dependencies": {
-    "@tanstack/react-query": "^4.29.7",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
-    "prettier": "^2.7.1",
-    "zod": "^3.21.4"
+    "prettier": "^2.7.1"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.190"
-  }
+  },
+  "private": true,
+  "workspaces": [
+    "schemas",
+    "server",
+    "my-app"
+  ]
 }

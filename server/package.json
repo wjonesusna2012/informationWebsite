@@ -1,5 +1,12 @@
 {
+  "name": "@info/server",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": ">=16.0.0 <17.0.0"
+  },
   "dependencies": {
+    "@info/schemas": "*",
     "@trpc/server": "^10.28.0",
     "axios": "^0.27.2",
     "express": "^4.17.1",

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const addNarrativeResponseSchema = z.object({
+export const addStoryResponseSchema = z.object({
     _id: z.string(),
     storyTitle: z.string(),
     summary: z.string(),
@@ -8,4 +8,4 @@ const addNarrativeResponseSchema = z.object({
     createdBy: z.string(),
 });
 
-export default addNarrativeResponseSchema;
+export default addStoryResponseSchema;
