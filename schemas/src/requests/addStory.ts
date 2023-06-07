@@ -11,6 +11,7 @@ export const addStorySchema = z.object({
     storyTitle: z.string().min(1).max(250, 'Limit to 250 characters'),
     date: z.date(),
     summary: z.string().min(1).max(1000, 'Limit to 1000 characters'),
+    link: z.string(),
 });
 
 export type AddStoryType = z.infer<typeof addStorySchema>;

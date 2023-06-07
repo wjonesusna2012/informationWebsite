@@ -5,13 +5,10 @@ import DialogActions from '@mui/material/DialogActions';
 import Stack from '@mui/material/Stack';
 import DialogContent from '@mui/material/DialogContent';
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
-import { DesktopDatePicker } from '@mui/x-date-pickers';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import DialogTitle from '@mui/material/DialogTitle';
 import Paper, { PaperProps } from '@mui/material/Paper';
 import Draggable from 'react-draggable';
-import TextField from '@mui/material/TextField';
-import { DateTime } from 'luxon';
 import { ImageList, ImageListItem, ImageListItemBar } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -19,10 +16,9 @@ import StoryIcon from '@mui/icons-material/AutoStoriesRounded';
 import AnchorInputAndPreview from './AnchorInputAndPreview';
 import RHFTextField from './RHFTextField';
 import RHFDatePicker from './RHFDatePicker';
-import { addStorySchema } from '@info/schemas';
+import { AddStoryType, addStorySchema } from '@info/schemas';
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { trpc } from '.';
 
 const DraggableAny: any = Draggable;
@@ -38,23 +34,24 @@ function PaperComponent(props: PaperProps) {
 }
 
 export default function DraggableDialog() {
-  const [postDate, setPostDate] = React.useState<DateTime | null>(
-    DateTime.now()
-  );
-  const [summary, setSummary] = React.useState<string>('');
   const [fileDialogOpen, setFileDialogOpen] = React.useState<boolean>(true);
   const [filesSaved, setFilesSaved] = React.useState<Array<string>>([]);
   const [anchorLink, setAnchorLink]= React.useState<string>('')
-  const { mutate: addStoryMutation, isLoading, error } = trpc.addStory.useMutation();
-  const methods = useForm<z.infer<typeof addStorySchema>>({
+  const { mutate: addStoryMutation } = trpc.addStory.useMutation();
+  const methods = useForm<AddStoryType>({
     defaultValues: {
       storyTitle: '',
       date: new Date(),
       summary: '',
+      link: '',
     },
     reValidateMode: 'onChange',
     resolver: zodResolver(addStorySchema),
   });
+  const submitStory = async (formData: AddStoryType) => {
+    console.log(formData);
+    addStoryMutation(formData);
+  }
   return (
     <Dialog
       maxWidth="md"
@@ -72,7 +69,7 @@ export default function DraggableDialog() {
       <DialogContent>
         <FormProvider {...methods}>
           <Stack spacing={3} sx={{ paddingTop: 2 }}>
-            <RHFTextField label="Story Title" name="title" />
+            <RHFTextField label="Story Title" name="storyTitle" />
             <LocalizationProvider dateAdapter={AdapterLuxon}>
               <RHFDatePicker label="Date" name="date"/>
             </LocalizationProvider>
@@ -84,18 +81,6 @@ export default function DraggableDialog() {
                 minRows: 5, 
               }} 
             />
-            {/* <TextField
-              id="story-summary"
-              label="Summary"
-              aria-describedby="story-summary-text"
-              value={summary}
-              multiline
-              minRows={5}
-              onChange={(e) => {
-                const { value } = e.target;
-                if (value.length <= 1000) setSummary(e.target.value);
-              }}
-            /> */}
             <Button variant="contained" component="label">
               Upload Image
               <input
@@ -151,7 +136,7 @@ export default function DraggableDialog() {
         <Button autoFocus variant="outlined" onClick={() => {}}>
           Cancel
         </Button>
-        <Button variant="contained" onClick={() => {}} endIcon={<StoryIcon />}>Add</Button>
+        <Button variant="contained" onClick={methods.handleSubmit(submitStory)} endIcon={<StoryIcon />}>Add</Button>
       </DialogActions>
     </Dialog>
   );

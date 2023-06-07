@@ -2,7 +2,7 @@ import express from 'express';
 import axios from 'axios';
 import generateHTMLNodes, { extractMetaTagsFromHTMLRoot } from './htmlParser';
 import { createContext, router, publicProcedure } from './trpc';
-import { addStorySchema, addStoryResponseSchema, addNarrativeSchema, addNarrativeResponseSchema, getNarrativeStoriesQuerySchema} from '@info/schemas';
+import { addStorySchema, addStoryResponseSchema, addNarrativeSchema, addNarrativeResponseSchema, getNarrativeStoriesQuerySchema, AddNarrativeResponseType} from '@info/schemas';
 import cors from 'cors';
 import * as trpcExpress from '@trpc/server/adapters/express';
 import { z } from 'zod';
@@ -45,12 +45,14 @@ const appRouter = router({
       };
     }),
   getNarrativesList: publicProcedure
-    // .output(z.array(addNarrativeResponseSchema))
+    .input(z.object({}))
+    .output(z.array(addNarrativeResponseSchema))
     .query(async opts => {
+      console.log(opts.ctx);
       await client.connect();
       const db = client.db('NarrativesProject');
       const collection = db.collection('narratives');
-      const results = await collection.find({}).toArray();
+      const results = await collection.find({}).toArray() as any as AddNarrativeResponseType[];
       return results;
     }),
   getNarrativeStories: publicProcedure

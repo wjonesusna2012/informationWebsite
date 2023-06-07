@@ -24,6 +24,7 @@ const RHFDatePicker = ({ label, name }: RHFDatePickerProps) => {
                     value={value}
                     onChange={onChange}
                     inputRef={fieldRef}
+                    disableMaskedInput
                     renderInput={
                         params => 
                             (<TextField {...params} />)

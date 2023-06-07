@@ -33,6 +33,7 @@ const trpc_1 = require("./trpc");
 const schemas_1 = require("@info/schemas");
 const cors_1 = __importDefault(require("cors"));
 const trpcExpress = __importStar(require("@trpc/server/adapters/express"));
+const zod_1 = require("zod");
 const database_1 = __importDefault(require("./database"));
 const appRouter = (0, trpc_1.router)({
     addStory: trpc_1.publicProcedure
@@ -71,8 +72,10 @@ const appRouter = (0, trpc_1.router)({
         };
     }),
     getNarrativesList: trpc_1.publicProcedure
-        // .output(z.array(addNarrativeResponseSchema))
+        .input(zod_1.z.object({}))
+        .output(zod_1.z.array(schemas_1.addNarrativeResponseSchema))
         .query(async (opts) => {
+        console.log(opts.ctx);
         await database_1.default.connect();
         const db = database_1.default.db('NarrativesProject');
         const collection = db.collection('narratives');

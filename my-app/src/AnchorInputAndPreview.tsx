@@ -12,8 +12,6 @@ const AnchorInputAndPreview: React.FC<AnchorInputProps> = ({
   anchorLink,
   setAnchorLink
 }) => {
-  const queryClient = useQueryClient();
-
   const { isLoading, error, data, fetchStatus } = useQuery({
     enabled: anchorLink !== '',
     queryKey: ['ImagePreview', anchorLink],

@@ -33,7 +33,7 @@ function PaperComponent(props: PaperProps) {
 
 export default function DraggableDialog() {
   const [fileDialogOpen, setFileDialogOpen] = React.useState<boolean>(true);
-  const { mutate: addNarrativeMutation, isLoading, error } = trpc.addNarrative.useMutation();
+  const { mutate: addNarrativeMutation } = trpc.addNarrative.useMutation();
   const methods = useForm<z.infer<typeof addNarrativeSchema>>({
     defaultValues: {
       summary: '',
