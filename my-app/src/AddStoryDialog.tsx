@@ -18,6 +18,12 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import StoryIcon from '@mui/icons-material/AutoStoriesRounded';
 import AnchorInputAndPreview from './AnchorInputAndPreview';
 import RHFTextField from './RHFTextField';
+import RHFDatePicker from './RHFDatePicker';
+import { addStorySchema } from '@info/schemas';
+import { FormProvider, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { trpc } from '.';
 
 const DraggableAny: any = Draggable;
 function PaperComponent(props: PaperProps) {
@@ -39,6 +45,16 @@ export default function DraggableDialog() {
   const [fileDialogOpen, setFileDialogOpen] = React.useState<boolean>(true);
   const [filesSaved, setFilesSaved] = React.useState<Array<string>>([]);
   const [anchorLink, setAnchorLink]= React.useState<string>('')
+  const { mutate: addStoryMutation, isLoading, error } = trpc.addStory.useMutation();
+  const methods = useForm<z.infer<typeof addStorySchema>>({
+    defaultValues: {
+      storyTitle: '',
+      date: new Date(),
+      summary: '',
+    },
+    reValidateMode: 'onChange',
+    resolver: zodResolver(addStorySchema),
+  });
   return (
     <Dialog
       maxWidth="md"
@@ -54,80 +70,82 @@ export default function DraggableDialog() {
         Add Story
       </DialogTitle>
       <DialogContent>
-        <Stack spacing={3}>
-          <RHFTextField label="Story Title" name="title" />
-          <TextField margin="normal" label="Story Title"></TextField>
-          <LocalizationProvider dateAdapter={AdapterLuxon}>
-            <DesktopDatePicker
-              label="Date"
-              renderInput={(props) => <TextField {...props} />}
-              value={postDate}
-              onChange={(newValue: DateTime | null) => {
-                setPostDate(newValue);
-              }}
+        <FormProvider {...methods}>
+          <Stack spacing={3} sx={{ paddingTop: 2 }}>
+            <RHFTextField label="Story Title" name="title" />
+            <LocalizationProvider dateAdapter={AdapterLuxon}>
+              <RHFDatePicker label="Date" name="date"/>
+            </LocalizationProvider>
+            <RHFTextField 
+              label="Summary"
+              name="summary"
+              textFieldSpecificProps={{
+                multiline: true,
+                minRows: 5, 
+              }} 
             />
-          </LocalizationProvider>
-          <TextField
-            id="story-summary"
-            label="Summary"
-            aria-describedby="story-summary-text"
-            value={summary}
-            multiline
-            minRows={5}
-            onChange={(e) => {
-              const { value } = e.target;
-              if (value.length <= 1000) setSummary(e.target.value);
-            }}
-          />
-          <Button variant="contained" component="label">
-            Upload Image
-            <input
-              hidden
-              multiple
-              type="file"
-              onChange={(event) => {
-                if (event !== undefined) {
-                  const fileList = event!.target!.files;
-                  const fileArray = [];
-                  for (let i = 0; i < fileList!.length; i++) {
-                    fileArray.push(
-                      URL.createObjectURL(fileList!.item(i) as File)
-                    );
-                  }
-                  setFilesSaved(fileArray);
-                }
+            {/* <TextField
+              id="story-summary"
+              label="Summary"
+              aria-describedby="story-summary-text"
+              value={summary}
+              multiline
+              minRows={5}
+              onChange={(e) => {
+                const { value } = e.target;
+                if (value.length <= 1000) setSummary(e.target.value);
               }}
-              accept="images/*"
-            />
-          </Button>
-          {filesSaved!.length > 0 && (
-            <ImageList cols={3}>
-              {filesSaved!.map((file) => (
-                <ImageListItem>
-                  <img src={file.toString()} alt={file.toString()} />
-                  <ImageListItemBar
-                    title={file}
-                    actionIcon={
-                      <IconButton>
-                        <DeleteIcon
-                          color="primary"
-                          onClick={() => {
-                            setFilesSaved([
-                              ...filesSaved.filter((e) => e !== file)
-                            ]);
-                          }}
-                        />
-                      </IconButton>
+            /> */}
+            <Button variant="contained" component="label">
+              Upload Image
+              <input
+                hidden
+                multiple
+                type="file"
+                onChange={(event) => {
+                  if (event !== undefined) {
+                    const fileList = event!.target!.files;
+                    const fileArray = [];
+                    for (let i = 0; i < fileList!.length; i++) {
+                      fileArray.push(
+                        URL.createObjectURL(fileList!.item(i) as File)
+                      );
                     }
-                  />
-                </ImageListItem>
-              ))}
-            </ImageList>
-          )}
-          <AnchorInputAndPreview anchorLink={anchorLink} setAnchorLink={(l) => {
-            setAnchorLink(l)
-          }} />
-        </Stack>
+                    setFilesSaved(fileArray);
+                  }
+                }}
+                accept="images/*"
+              />
+            </Button>
+            {filesSaved!.length > 0 && (
+              <ImageList cols={3}>
+                {filesSaved!.map((file) => (
+                  <ImageListItem>
+                    <img src={file.toString()} alt={file.toString()} />
+                    <ImageListItemBar
+                      title={file}
+                      actionIcon={
+                        <IconButton>
+                          <DeleteIcon
+                            color="primary"
+                            onClick={() => {
+                              setFilesSaved([
+                                ...filesSaved.filter((e) => e !== file)
+                              ]);
+                            }}
+                          />
+                        </IconButton>
+                      }
+                    />
+                  </ImageListItem>
+                ))}
+              </ImageList>
+            )}
+            <AnchorInputAndPreview anchorLink={anchorLink} setAnchorLink={(l) => {
+              setAnchorLink(l)
+            }} />
+          </Stack>
+        </FormProvider>
       </DialogContent>
       <DialogActions>
         <Button autoFocus variant="outlined" onClick={() => {}}>

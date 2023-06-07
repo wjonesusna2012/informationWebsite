@@ -33,3 +33,5 @@ const RHFDatePicker = ({ label, name }: RHFDatePickerProps) => {
         />
     )
 }
+
+export default RHFDatePicker;

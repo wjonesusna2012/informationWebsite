@@ -9,4 +9,6 @@ export const addNarrativeResponseSchema = z.object({
     createdBy: z.string(),
 });
 
+export type AddNarrativeResponseType = z.infer<typeof addNarrativeResponseSchema>
+
 export default addNarrativeResponseSchema;

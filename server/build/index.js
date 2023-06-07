@@ -29,16 +29,83 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const axios_1 = __importDefault(require("axios"));
 const htmlParser_1 = __importStar(require("./htmlParser"));
-const expressRouter = (0, express_1.default)();
-expressRouter.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    next();
+const trpc_1 = require("./trpc");
+const schemas_1 = require("@info/schemas");
+const cors_1 = __importDefault(require("cors"));
+const trpcExpress = __importStar(require("@trpc/server/adapters/express"));
+const database_1 = __importDefault(require("./database"));
+const appRouter = (0, trpc_1.router)({
+    addStory: trpc_1.publicProcedure
+        .input(schemas_1.addStorySchema)
+        .output(schemas_1.addStoryResponseSchema)
+        .mutation(async (opts) => {
+        console.log(opts);
+        await database_1.default.connect();
+        const db = database_1.default.db('NarrativesProject');
+        const collection = db.collection('narratives');
+        await collection.insertOne({ ...opts.input, createdAt: new Date(), createdBy: 'Phil N. Later' });
+        return {
+            _id: 'Test ID',
+            storyTitle: 'Title Test',
+            summary: 'Lorem Ipsum I forget I don\'t have internet',
+            createdAt: new Date(),
+            createdBy: 'Yours Truly',
+        };
+    }),
+    addNarrative: trpc_1.publicProcedure
+        .input(schemas_1.addNarrativeSchema)
+        .output(schemas_1.addNarrativeResponseSchema)
+        .mutation(async (opts) => {
+        console.log(opts);
+        await database_1.default.connect();
+        const db = database_1.default.db('NarrativesProject');
+        const collection = db.collection('narratives');
+        await collection.insertOne({ ...opts.input, createdAt: new Date(), createdBy: 'Phil N. Later' });
+        return {
+            _id: 'Test ID',
+            title: 'Title Test',
+            summary: 'Lorem Ipsum I forget I don\'t have internet',
+            abbreviation: 'EXO2020',
+            createdAt: new Date(),
+            createdBy: 'Yours Truly',
+        };
+    }),
+    getNarrativesList: trpc_1.publicProcedure
+        // .output(z.array(addNarrativeResponseSchema))
+        .query(async (opts) => {
+        await database_1.default.connect();
+        const db = database_1.default.db('NarrativesProject');
+        const collection = db.collection('narratives');
+        const results = await collection.find({}).toArray();
+        return results;
+    }),
+    getNarrativeStories: trpc_1.publicProcedure
+        .input(schemas_1.getNarrativeStoriesQuerySchema)
+        // .output(z.array(addNarrativeResponseSchema))
+        .query(async (opts) => {
+        const { narrativeId } = opts.input;
+        await database_1.default.connect();
+        const db = database_1.default.db('NarrativesProject');
+        const collection = db.collection('narrativeStoryRelationships');
+        const storyCollection = db.collection('stories');
+        const results = await collection.find({ narrativeId }).toArray();
+        const stories = results.map(e => e.storyId);
+        const storyResults = stories.map(async (s) => {
+            return await storyCollection.findOne({ _id: s });
+        });
+        return storyResults;
+    }),
 });
+const expressRouter = (0, express_1.default)();
+expressRouter.use((0, cors_1.default)());
+expressRouter.use('/trpc', trpcExpress.createExpressMiddleware({
+    router: appRouter,
+    createContext: trpc_1.createContext,
+}));
 expressRouter.get('/', (req, res) => {
-    res.send('Express Server Running');
+    res.sendStatus(200);
 });
 expressRouter.get('/proxy/og/', (req, res) => {
-    console.log();
     const params = req.query;
     axios_1.default.get(params.url).then((response) => {
         const htmlDoc = (0, htmlParser_1.default)(response.data);
@@ -46,6 +113,6 @@ expressRouter.get('/proxy/og/', (req, res) => {
         res.json(responseObject);
     });
 });
-expressRouter.listen(3001, () => {
-    console.log('Express server listening on port 3001');
+expressRouter.listen(4000, () => {
+    console.log('Express server listening on port 4000!!');
 });

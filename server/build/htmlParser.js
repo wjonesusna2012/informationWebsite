@@ -14,7 +14,6 @@ const generateHTMLNodes = (data) => (0, node_html_parser_1.parse)(data);
 exports.generateHTMLNodes = generateHTMLNodes;
 const extractMetaTagsFromHTMLRoot = (rootElement) => {
     const allMetaNodes = rootElement.querySelectorAll('meta');
-    console.log(allMetaNodes);
     const parsedMetaObject = {
         title: '',
         description: '',

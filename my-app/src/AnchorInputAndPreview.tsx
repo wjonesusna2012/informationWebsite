@@ -6,6 +6,7 @@ import { AnchorInputProps } from './interfaces';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Warning } from '@mui/icons-material';
 import axios, { AxiosError } from 'axios';
+import RHFTextField from './RHFTextField';
 
 const AnchorInputAndPreview: React.FC<AnchorInputProps> = ({
   anchorLink,
@@ -29,7 +30,8 @@ const AnchorInputAndPreview: React.FC<AnchorInputProps> = ({
   return (
     <>
       <Stack spacing={2} direction="row">
-        <TextField label="Link" placeholder="Enter Link" value={anchorLink} />
+        <RHFTextField name="link" label="Link" />
+        {/* <TextField label="Link" placeholder="Enter Link" value={anchorLink} /> */}
         <Button variant="contained" onClick={l => setAnchorLink('')}>Add</Button>
       </Stack>
       {isLoading && fetchStatus === 'fetching' && <CircularProgress />}

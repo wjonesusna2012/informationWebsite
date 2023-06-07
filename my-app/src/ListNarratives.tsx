@@ -1,22 +1,25 @@
 import React from 'react';
 import CardAccordion from './CardAccordion';
 import { Stack } from '@mui/material';
-import { TopicCardProps } from './interfaces';
+import { CircularProgress } from '@mui/material';
+import { trpc } from '.';
 
 const ListNarratives = () => {
-    const narratives = [] as TopicCardProps[];
+    const { data: narratives, isLoading } = trpc.getNarrativesList.useQuery();
+    if (isLoading) return (<CircularProgress/>); 
     return (
         <Stack>
             {
-                narratives.map(n => (
+                narratives?.map(n => (
                     <CardAccordion 
                         summary={n.title as string} 
                         details={n.summary as string}
-                    >
-                        
-                    </CardAccordion>
-                )
+                        abbreviation={n.abbreviation as string}
+                    />
+                ))
             }
         </Stack>
     )
 }
+
+export default ListNarratives;

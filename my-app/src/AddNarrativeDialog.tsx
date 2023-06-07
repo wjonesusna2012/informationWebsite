@@ -11,8 +11,11 @@ import SpinIcon from '@mui/icons-material/Bolt'
 import { useForm, FormProvider } from 'react-hook-form';
 import RHFTextField from './RHFTextField';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { AddNarrativeType, addNarrativeSchema } from '@info/schemas';
+import { addNarrativeSchema } from '@info/schemas';
 import { trpc } from '.';
+import { z } from 'zod';
+
+type AddNarrativeType = z.infer<typeof addNarrativeSchema>;
 
 // Do this as there is a bug with @types/react dependency for this package.
 const DraggableAny: any = Draggable;
@@ -30,8 +33,8 @@ function PaperComponent(props: PaperProps) {
 
 export default function DraggableDialog() {
   const [fileDialogOpen, setFileDialogOpen] = React.useState<boolean>(true);
-  const addNarrativeMutation = trpc.addNarrative.useMutation();
-  const methods = useForm<AddNarrativeType>({
+  const { mutate: addNarrativeMutation, isLoading, error } = trpc.addNarrative.useMutation();
+  const methods = useForm<z.infer<typeof addNarrativeSchema>>({
     defaultValues: {
       summary: '',
       title: '',
@@ -61,7 +64,7 @@ export default function DraggableDialog() {
       </DialogTitle>
       <DialogContent>
         <FormProvider {...methods} >
-          <Stack spacing={3}>
+          <Stack spacing={3} sx={{ paddingTop: 2 }}>
             <RHFTextField name="title" label="Narrative Title" />
             <RHFTextField name="abbreviation" label="Narrative Abbreviation (12 characters max)" />
             <RHFTextField name="summary" label="Narrative Summary" textFieldSpecificProps={{
@@ -71,7 +74,7 @@ export default function DraggableDialog() {
           </Stack>
         </FormProvider>
       </DialogContent>
-      <DialogActions>
+      <DialogActions sx={{ padding: 2 }}>
         <Button variant="outlined" onClick={() => setFileDialogOpen(false)}>
           Cancel
         </Button>

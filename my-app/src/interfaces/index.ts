@@ -14,7 +14,8 @@ export interface AnchorState {
 export interface CardAccordianProps {
   summary: string;
   details: string;
-  children: Array<React.ReactElement>;
+  abbreviation: string;
+  children?: Array<React.ReactElement>;
 }
 
 export interface MenuInterface {

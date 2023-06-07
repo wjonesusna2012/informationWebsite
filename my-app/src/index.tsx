@@ -6,8 +6,9 @@ import Root from './App';
 import reportWebVitals from './reportWebVitals';
 import AddNarrativeDialog from './AddNarrativeDialog'; 
 import AddStoryDialog from './AddStoryDialog';
+import ListNarratives from './ListNarratives';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { httpBatchLink } from '@trpc/client'
+import { httpLink } from '@trpc/client'
 import { createTRPCReact } from '@trpc/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { AppRouter } from '@info/server';
@@ -15,14 +16,8 @@ import { AppRouter } from '@info/server';
 export const trpc = createTRPCReact<AppRouter>({});
 const trpcClient = trpc.createClient({
   links: [
-    httpBatchLink({
-      url: 'http://localhost:3001',
-      // optional
-      headers() {
-        return {
-          // authorization: getAuthCookie(),
-        }
-      },
+    httpLink({
+      url: 'http://localhost:4000/trpc',
     }),
   ],
 })
@@ -38,6 +33,10 @@ const router = createBrowserRouter([
       {
         path: '/narratives',
         Component: AddNarrativeDialog,
+      },
+      {
+        path: '/listNarratives',
+        Component: ListNarratives,
       },
       {
         path: '/stories',

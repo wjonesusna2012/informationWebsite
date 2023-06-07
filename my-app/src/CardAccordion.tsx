@@ -3,13 +3,19 @@ import Accordion from '@mui/material/Accordion';
 import AccordianSummary from '@mui/material/AccordionSummary';
 import AccordianDetails from '@mui/material/AccordionDetails';
 import { CardAccordianProps } from './interfaces';
+import { Chip, Typography } from '@mui/material';
 
-const CardAccordion = ({ summary, details, children}: CardAccordianProps) => {
+const CardAccordion = ({ summary, details, abbreviation, children }: CardAccordianProps) => {
   return (
     <Accordion>
-      <AccordianSummary>{summary}</AccordianSummary>
+      <AccordianSummary>
+        <Typography variant='h3'>
+          {summary}
+        </Typography>
+        <Chip label={abbreviation} />
+      </AccordianSummary>
       <AccordianDetails>{details}</AccordianDetails>
-      {children}
+      {!!children && children}
     </Accordion>
   );
 };
