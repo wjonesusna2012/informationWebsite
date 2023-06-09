@@ -40,15 +40,16 @@ const appRouter = (0, trpc_1.router)({
         .input(schemas_1.addStorySchema)
         .output(schemas_1.addStoryResponseSchema)
         .mutation(async (opts) => {
-        console.log(opts);
         await database_1.default.connect();
         const db = database_1.default.db('NarrativesProject');
-        const collection = db.collection('narratives');
+        const collection = db.collection('stories');
         await collection.insertOne({ ...opts.input, createdAt: new Date(), createdBy: 'Phil N. Later' });
         return {
             _id: 'Test ID',
             storyTitle: 'Title Test',
             summary: 'Lorem Ipsum I forget I don\'t have internet',
+            link: '',
+            date: new Date(),
             createdAt: new Date(),
             createdBy: 'Yours Truly',
         };
@@ -57,7 +58,6 @@ const appRouter = (0, trpc_1.router)({
         .input(schemas_1.addNarrativeSchema)
         .output(schemas_1.addNarrativeResponseSchema)
         .mutation(async (opts) => {
-        console.log(opts);
         await database_1.default.connect();
         const db = database_1.default.db('NarrativesProject');
         const collection = db.collection('narratives');
@@ -72,7 +72,6 @@ const appRouter = (0, trpc_1.router)({
         };
     }),
     getNarrativesList: trpc_1.publicProcedure
-        .input(zod_1.z.object({}))
         .output(zod_1.z.array(schemas_1.addNarrativeResponseSchema))
         .query(async (opts) => {
         console.log(opts.ctx);
@@ -80,6 +79,7 @@ const appRouter = (0, trpc_1.router)({
         const db = database_1.default.db('NarrativesProject');
         const collection = db.collection('narratives');
         const results = await collection.find({}).toArray();
+        console.log(results, typeof results[0]._id);
         return results;
     }),
     getNarrativeStories: trpc_1.publicProcedure

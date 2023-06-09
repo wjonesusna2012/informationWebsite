@@ -13,15 +13,16 @@ const appRouter = router({
     .input(addStorySchema)
     .output(addStoryResponseSchema)
     .mutation(async opts => {
-      console.log(opts);
       await client.connect();
       const db = client.db('NarrativesProject');
-      const collection = db.collection('narratives');
+      const collection = db.collection('stories');
       await collection.insertOne({...opts.input, createdAt: new Date(), createdBy: 'Phil N. Later'});
       return {
         _id: 'Test ID',
         storyTitle: 'Title Test',
         summary: 'Lorem Ipsum I forget I don\'t have internet',
+        link: '',
+        date: new Date(),
         createdAt: new Date(),
         createdBy: 'Yours Truly',
       };
@@ -30,7 +31,6 @@ const appRouter = router({
     .input(addNarrativeSchema)
     .output(addNarrativeResponseSchema)
     .mutation(async opts => {
-      console.log(opts);
       await client.connect();
       const db = client.db('NarrativesProject');
       const collection = db.collection('narratives');
@@ -45,7 +45,6 @@ const appRouter = router({
       };
     }),
   getNarrativesList: publicProcedure
-    .input(z.object({}))
     .output(z.array(addNarrativeResponseSchema))
     .query(async opts => {
       console.log(opts.ctx);
@@ -53,6 +52,7 @@ const appRouter = router({
       const db = client.db('NarrativesProject');
       const collection = db.collection('narratives');
       const results = await collection.find({}).toArray() as any as AddNarrativeResponseType[];
+      console.log(results, typeof results[0]._id);
       return results;
     }),
   getNarrativeStories: publicProcedure

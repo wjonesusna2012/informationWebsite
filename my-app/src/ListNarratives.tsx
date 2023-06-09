@@ -1,11 +1,11 @@
 import React from 'react';
-import CardAccordion from './CardAccordion';
+import CardAccordion from './NarrativeAccordian';
 import { Stack } from '@mui/material';
 import { CircularProgress } from '@mui/material';
 import { trpc } from '.';
 
 const ListNarratives = () => {
-    const { data: narratives, isLoading } = trpc.getNarrativesList.useQuery({});
+    const { data: narratives, isLoading } = trpc.getNarrativesList.useQuery();
     if (isLoading) return (<CircularProgress/>); 
     return (
         <Stack>

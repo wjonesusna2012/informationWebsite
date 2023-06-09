@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import './index.css';
 import Root from './App';
@@ -12,9 +12,11 @@ import { httpLink } from '@trpc/client'
 import { createTRPCReact } from '@trpc/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { AppRouter } from '@info/server';
+import SuperJSON from 'superjson';
 
 export const trpc = createTRPCReact<AppRouter>({});
 const trpcClient = trpc.createClient({
+  transformer: SuperJSON,
   links: [
     httpLink({
       url: 'http://localhost:4000/trpc',
@@ -46,7 +48,9 @@ const router = createBrowserRouter([
   }
 ])
 
-ReactDOM.render(
+const rootNode = document.getElementById('root');
+const root = createRoot(rootNode as Element);
+root.render(
   <React.StrictMode>
     <trpc.Provider queryClient={queryClient} client={trpcClient}>
       <QueryClientProvider client={queryClient}>
@@ -64,8 +68,7 @@ ReactDOM.render(
           />
       </QueryClientProvider>
     </trpc.Provider>
-  </React.StrictMode>,
-  document.getElementById('root')
+  </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

@@ -1,6 +1,6 @@
 import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
-import CardAccordion from '../CardAccordion';
+import CardAccordion from '../NarrativeAccordian';
 import TopicCard from '../TopicCard';
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export

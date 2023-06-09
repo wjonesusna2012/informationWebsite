@@ -1,7 +1,8 @@
 import { z } from 'zod';
+import type { ObjectId } from 'bson';
 
 export const addNarrativeResponseSchema = z.object({
-    _id: z.string(),
+    _id: z.any(),
     title: z.string(),
     abbreviation: z.string(),
     summary: z.string(),

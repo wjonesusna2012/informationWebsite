@@ -11,7 +11,7 @@ export interface AnchorState {
   title: string;
 }
 
-export interface CardAccordianProps {
+export interface NarrativeAccordianProps {
   summary: string;
   details: string;
   abbreviation: string;
