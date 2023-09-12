@@ -2,7 +2,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import './index.css';
-import Root from './App';
+import App from './App';
 import reportWebVitals from './reportWebVitals';
 import AddNarrativeDialog from './AddNarrativeDialog'; 
 import AddStoryDialog from './AddStoryDialog';
@@ -26,7 +26,7 @@ const trpcClient = trpc.createClient({
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
   {
-    Component: Root,
+    Component: App,
     children: [
       {
         path: '/',

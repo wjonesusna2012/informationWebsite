@@ -7,6 +7,7 @@ import cors from 'cors';
 import * as trpcExpress from '@trpc/server/adapters/express';
 import { z } from 'zod';
 import client from './database';
+import { establishConnectionToCollection } from './utils/db';
 
 const appRouter = router({
   addStory: publicProcedure
@@ -47,12 +48,8 @@ const appRouter = router({
   getNarrativesList: publicProcedure
     .output(z.array(addNarrativeResponseSchema))
     .query(async opts => {
-      console.log(opts.ctx);
-      await client.connect();
-      const db = client.db('NarrativesProject');
-      const collection = db.collection('narratives');
-      const results = await collection.find({}).toArray() as any as AddNarrativeResponseType[];
-      console.log(results, typeof results[0]._id);
+      const collection = await establishConnectionToCollection('NarrativesProject', 'narratives');
+      const results = await collection.find<AddNarrativeResponseType>({}).toArray(); 
       return results;
     }),
   getNarrativeStories: publicProcedure
