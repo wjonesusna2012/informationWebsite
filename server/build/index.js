@@ -35,6 +35,7 @@ const cors_1 = __importDefault(require("cors"));
 const trpcExpress = __importStar(require("@trpc/server/adapters/express"));
 const zod_1 = require("zod");
 const database_1 = __importDefault(require("./database"));
+const db_1 = require("./utils/db");
 const appRouter = (0, trpc_1.router)({
     addStory: trpc_1.publicProcedure
         .input(schemas_1.addStorySchema)
@@ -71,15 +72,16 @@ const appRouter = (0, trpc_1.router)({
             createdBy: 'Yours Truly',
         };
     }),
+    // addStoryToNarrative: publicProcedure.input().output().mutation(async opts => {
+    //   await client.connect();
+    //   const db = client.db('NarrativesProject');
+    //   const collection = db.collection('narratives');
+    // }),
     getNarrativesList: trpc_1.publicProcedure
         .output(zod_1.z.array(schemas_1.addNarrativeResponseSchema))
         .query(async (opts) => {
-        console.log(opts.ctx);
-        await database_1.default.connect();
-        const db = database_1.default.db('NarrativesProject');
-        const collection = db.collection('narratives');
+        const collection = await (0, db_1.establishConnectionToCollection)('NarrativesProject', 'narratives');
         const results = await collection.find({}).toArray();
-        console.log(results, typeof results[0]._id);
         return results;
     }),
     getNarrativeStories: trpc_1.publicProcedure

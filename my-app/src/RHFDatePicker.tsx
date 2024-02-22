@@ -1,7 +1,7 @@
 import React from 'react';
 import { useFormContext, Controller } from 'react-hook-form';
 import { TextField } from '@mui/material';
-import { DatePickerProps, DatePicker } from '@mui/x-date-pickers';
+import { DatePicker } from '@mui/x-date-pickers';
 
 interface RHFDatePickerProps {
     label: string

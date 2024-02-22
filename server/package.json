@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": ">=16.0.0 <17.0.0"
+    "node": ">=16.0.0 <=21.0.0"
   },
   "dependencies": {
     "@info/schemas": "*",
@@ -27,7 +27,7 @@
   },
   "scripts": {
     "build": "tsc -p .",
-    "clean": "rm -rf ./build && rm -rf ./node_modules",
+    "clean": "rm -rf ./build && tsc -p .",
     "start": "node ./build/index",
     "watch": "yarn run build -- -watch"
   }

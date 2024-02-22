@@ -23,12 +23,14 @@ import { trpc } from '.';
 
 const DraggableAny: any = Draggable;
 function PaperComponent(props: PaperProps) {
+  const nodeRef = React.useRef(null);
   return (
     <DraggableAny
       handle="#draggable-dialog-title"
       cancel={'[class*="MuiDialogContent-root"]'}
+      nodeRef={nodeRef}
     >
-      <Paper {...props} />
+      <Paper {...props} ref={nodeRef} />
     </DraggableAny>
   );
 }
@@ -49,8 +51,8 @@ export default function DraggableDialog() {
     resolver: zodResolver(addStorySchema),
   });
   const submitStory = async (formData: AddStoryType) => {
-    console.log(formData);
     addStoryMutation(formData);
+    setFileDialogOpen(false);
   }
   return (
     <Dialog
@@ -141,3 +143,7 @@ export default function DraggableDialog() {
     </Dialog>
   );
 }
+
+// Young professionals and early leaders Kelly HoHertz meetings pickleball, round tables, assistance with L* candidates.
+// Tyler Young, University relations. Bring more awareness to charter. Scholarship programs. 1 or 2 a year.
+// Lauren membership committee attracting and retaining members. Programming deliver education content 

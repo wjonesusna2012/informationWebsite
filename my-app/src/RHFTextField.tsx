@@ -1,5 +1,5 @@
 import { Controller, useFormContext } from 'react-hook-form';
-import { TextField, TextFieldVariants, TextFieldProps } from '@mui/material';
+import { TextField, TextFieldProps } from '@mui/material';
 
 interface RHFTextFieldProps {
     name: string,

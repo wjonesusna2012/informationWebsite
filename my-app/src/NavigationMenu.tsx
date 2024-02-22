@@ -44,6 +44,7 @@ const NavigationMenu = () => {
             Narratives
           </Typography>
           <Autocomplete
+            freeSolo
             disablePortal
             multiple
             id="combo-box-demo"

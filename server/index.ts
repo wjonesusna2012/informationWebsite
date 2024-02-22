@@ -2,7 +2,7 @@ import express from 'express';
 import axios from 'axios';
 import generateHTMLNodes, { extractMetaTagsFromHTMLRoot } from './htmlParser';
 import { createContext, router, publicProcedure } from './trpc';
-import { addStorySchema, addStoryResponseSchema, addNarrativeSchema, addNarrativeResponseSchema, getNarrativeStoriesQuerySchema, AddNarrativeResponseType} from '@info/schemas';
+import { addStorySchema, addStoryResponseSchema, addNarrativeSchema, addNarrativeResponseSchema, getNarrativeStoriesQuerySchema, addTagResponseSchema, addTagSchema, AddNarrativeResponseType} from '@info/schemas';
 import cors from 'cors';
 import * as trpcExpress from '@trpc/server/adapters/express';
 import { z } from 'zod';
@@ -45,6 +45,26 @@ const appRouter = router({
         createdBy: 'Yours Truly',
       };
     }),
+    addTag: publicProcedure.input(addTagSchema).output(addTagResponseSchema).mutation(async opts => {
+      await client.connect();
+      const db = client.db('NarrativesProject');
+      const collection = db.collection('narratives');
+      await collection.insertOne({...opts.input, createdAt: new Date(), createdBy: 'Phil N. Later'});
+      return {
+        _id: 'Test ID',
+        title: 'Title Test',
+        summary: 'Lorem Ipsum I forget I don\'t have internet',
+        abbreviation: 'EXO2020',
+        createdAt: new Date(),
+        createdBy: 'Yours Truly',
+      };
+
+    }),
+  // addStoryToNarrative: publicProcedure.input().output().mutation(async opts => {
+  //   await client.connect();
+  //   const db = client.db('NarrativesProject');
+  //   const collection = db.collection('narratives');
+  // }),
   getNarrativesList: publicProcedure
     .output(z.array(addNarrativeResponseSchema))
     .query(async opts => {
