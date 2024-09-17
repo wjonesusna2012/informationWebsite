@@ -44,15 +44,19 @@ const appRouter = (0, trpc_1.router)({
         await database_1.default.connect();
         const db = database_1.default.db('NarrativesProject');
         const collection = db.collection('stories');
-        await collection.insertOne({ ...opts.input, createdAt: new Date(), createdBy: 'Phil N. Later' });
+        await collection.insertOne({
+            ...opts.input,
+            createdAt: new Date(),
+            createdBy: 'Phil N. Later'
+        });
         return {
             _id: 'Test ID',
             storyTitle: 'Title Test',
-            summary: 'Lorem Ipsum I forget I don\'t have internet',
+            summary: "Lorem Ipsum I forget I don't have internet",
             link: '',
             date: new Date(),
             createdAt: new Date(),
-            createdBy: 'Yours Truly',
+            createdBy: 'Yours Truly'
         };
     }),
     addNarrative: trpc_1.publicProcedure
@@ -62,14 +66,39 @@ const appRouter = (0, trpc_1.router)({
         await database_1.default.connect();
         const db = database_1.default.db('NarrativesProject');
         const collection = db.collection('narratives');
-        await collection.insertOne({ ...opts.input, createdAt: new Date(), createdBy: 'Phil N. Later' });
+        await collection.insertOne({
+            ...opts.input,
+            createdAt: new Date(),
+            createdBy: 'Phil N. Later'
+        });
         return {
             _id: 'Test ID',
             title: 'Title Test',
-            summary: 'Lorem Ipsum I forget I don\'t have internet',
+            summary: "Lorem Ipsum I forget I don't have internet",
             abbreviation: 'EXO2020',
             createdAt: new Date(),
-            createdBy: 'Yours Truly',
+            createdBy: 'Yours Truly'
+        };
+    }),
+    addTag: trpc_1.publicProcedure
+        .input(schemas_1.addTagSchema)
+        .output(schemas_1.addTagResponseSchema)
+        .mutation(async (opts) => {
+        await database_1.default.connect();
+        const db = database_1.default.db('NarrativesProject');
+        const collection = db.collection('narratives');
+        const { insertedId } = await collection.insertOne({
+            ...opts.input,
+            createdAt: new Date(),
+            createdBy: 'Phil N. Later'
+        });
+        const insertedObject = await collection.findOne(insertedId);
+        return {
+            _id: 'Test ID',
+            tagTitle: 'Title Test',
+            tagName: "Lorem Ipsum I forget I don't have internet",
+            createdAt: new Date(),
+            createdBy: 'Yours Truly'
         };
     }),
     // addStoryToNarrative: publicProcedure.input().output().mutation(async opts => {
@@ -81,7 +110,9 @@ const appRouter = (0, trpc_1.router)({
         .output(zod_1.z.array(schemas_1.addNarrativeResponseSchema))
         .query(async (opts) => {
         const collection = await (0, db_1.establishConnectionToCollection)('NarrativesProject', 'narratives');
-        const results = await collection.find({}).toArray();
+        const results = await collection
+            .find({})
+            .toArray();
         return results;
     }),
     getNarrativeStories: trpc_1.publicProcedure
@@ -94,18 +125,18 @@ const appRouter = (0, trpc_1.router)({
         const collection = db.collection('narrativeStoryRelationships');
         const storyCollection = db.collection('stories');
         const results = await collection.find({ narrativeId }).toArray();
-        const stories = results.map(e => e.storyId);
+        const stories = results.map((e) => e.storyId);
         const storyResults = stories.map(async (s) => {
             return await storyCollection.findOne({ _id: s });
         });
         return storyResults;
-    }),
+    })
 });
 const expressRouter = (0, express_1.default)();
 expressRouter.use((0, cors_1.default)());
 expressRouter.use('/trpc', trpcExpress.createExpressMiddleware({
     router: appRouter,
-    createContext: trpc_1.createContext,
+    createContext: trpc_1.createContext
 }));
 expressRouter.get('/', (req, res) => {
     res.sendStatus(200);

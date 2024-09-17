@@ -2,63 +2,87 @@ import express from 'express';
 import axios from 'axios';
 import generateHTMLNodes, { extractMetaTagsFromHTMLRoot } from './htmlParser';
 import { createContext, router, publicProcedure } from './trpc';
-import { addStorySchema, addStoryResponseSchema, addNarrativeSchema, addNarrativeResponseSchema, getNarrativeStoriesQuerySchema, addTagResponseSchema, addTagSchema, AddNarrativeResponseType} from '@info/schemas';
+import {
+  addStorySchema,
+  addStoryResponseSchema,
+  addNarrativeSchema,
+  addNarrativeResponseSchema,
+  getNarrativeStoriesQuerySchema,
+  addTagResponseSchema,
+  addTagSchema,
+  AddNarrativeResponseType
+} from '@info/schemas';
 import cors from 'cors';
 import * as trpcExpress from '@trpc/server/adapters/express';
 import { z } from 'zod';
 import client from './database';
 import { establishConnectionToCollection } from './utils/db';
+import { pick } from 'lodash';
 
 const appRouter = router({
   addStory: publicProcedure
     .input(addStorySchema)
     .output(addStoryResponseSchema)
-    .mutation(async opts => {
+    .mutation(async (opts) => {
       await client.connect();
       const db = client.db('NarrativesProject');
       const collection = db.collection('stories');
-      await collection.insertOne({...opts.input, createdAt: new Date(), createdBy: 'Phil N. Later'});
+      await collection.insertOne({
+        ...opts.input,
+        createdAt: new Date(),
+        createdBy: 'Phil N. Later'
+      });
       return {
         _id: 'Test ID',
         storyTitle: 'Title Test',
-        summary: 'Lorem Ipsum I forget I don\'t have internet',
+        summary: "Lorem Ipsum I forget I don't have internet",
         link: '',
         date: new Date(),
         createdAt: new Date(),
-        createdBy: 'Yours Truly',
+        createdBy: 'Yours Truly'
       };
     }),
   addNarrative: publicProcedure
     .input(addNarrativeSchema)
     .output(addNarrativeResponseSchema)
-    .mutation(async opts => {
+    .mutation(async (opts) => {
       await client.connect();
       const db = client.db('NarrativesProject');
       const collection = db.collection('narratives');
-      await collection.insertOne({...opts.input, createdAt: new Date(), createdBy: 'Phil N. Later'});
+      await collection.insertOne({
+        ...opts.input,
+        createdAt: new Date(),
+        createdBy: 'Phil N. Later'
+      });
       return {
         _id: 'Test ID',
         title: 'Title Test',
-        summary: 'Lorem Ipsum I forget I don\'t have internet',
+        summary: "Lorem Ipsum I forget I don't have internet",
         abbreviation: 'EXO2020',
         createdAt: new Date(),
-        createdBy: 'Yours Truly',
+        createdBy: 'Yours Truly'
       };
     }),
-    addTag: publicProcedure.input(addTagSchema).output(addTagResponseSchema).mutation(async opts => {
+  addTag: publicProcedure
+    .input(addTagSchema)
+    .output(addTagResponseSchema)
+    .mutation(async (opts) => {
       await client.connect();
       const db = client.db('NarrativesProject');
       const collection = db.collection('narratives');
-      await collection.insertOne({...opts.input, createdAt: new Date(), createdBy: 'Phil N. Later'});
+      const { insertedId } = await collection.insertOne({
+        ...opts.input,
+        createdAt: new Date(),
+        createdBy: 'Phil N. Later'
+      });
+      const insertedObject = await collection.findOne(insertedId);
       return {
         _id: 'Test ID',
-        title: 'Title Test',
-        summary: 'Lorem Ipsum I forget I don\'t have internet',
-        abbreviation: 'EXO2020',
+        tagTitle: 'Title Test',
+        tagName: "Lorem Ipsum I forget I don't have internet",
         createdAt: new Date(),
-        createdBy: 'Yours Truly',
+        createdBy: 'Yours Truly'
       };
-
     }),
   // addStoryToNarrative: publicProcedure.input().output().mutation(async opts => {
   //   await client.connect();
@@ -67,28 +91,33 @@ const appRouter = router({
   // }),
   getNarrativesList: publicProcedure
     .output(z.array(addNarrativeResponseSchema))
-    .query(async opts => {
-      const collection = await establishConnectionToCollection('NarrativesProject', 'narratives');
-      const results = await collection.find<AddNarrativeResponseType>({}).toArray(); 
+    .query(async (opts) => {
+      const collection = await establishConnectionToCollection(
+        'NarrativesProject',
+        'narratives'
+      );
+      const results = await collection
+        .find<AddNarrativeResponseType>({})
+        .toArray();
       return results;
     }),
   getNarrativeStories: publicProcedure
     .input(getNarrativeStoriesQuerySchema)
     // .output(z.array(addNarrativeResponseSchema))
-    .query(async opts => {
+    .query(async (opts) => {
       const { narrativeId } = opts.input;
       await client.connect();
       const db = client.db('NarrativesProject');
       const collection = db.collection('narrativeStoryRelationships');
       const storyCollection = db.collection('stories');
       const results = await collection.find({ narrativeId }).toArray();
-      const stories = results.map(e => e.storyId);
-      const storyResults = stories.map(async s => {
-        return await storyCollection.findOne({ _id: s }) 
+      const stories = results.map((e) => e.storyId);
+      const storyResults = stories.map(async (s) => {
+        return await storyCollection.findOne({ _id: s });
       });
       return storyResults;
-    }),
-})
+    })
+});
 
 export type AppRouter = typeof appRouter;
 
@@ -99,8 +128,8 @@ expressRouter.use(
   '/trpc',
   trpcExpress.createExpressMiddleware({
     router: appRouter,
-    createContext,
-  }),
+    createContext
+  })
 );
 
 expressRouter.get('/', (req, res) => {
