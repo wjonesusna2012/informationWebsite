@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import type { ObjectId } from 'bson';
 
 export const addTagResponseSchema = z.object({
     _id: z.any(),

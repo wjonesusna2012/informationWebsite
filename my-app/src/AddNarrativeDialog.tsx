@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -7,13 +7,14 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import Paper, { PaperProps } from '@mui/material/Paper';
 import Draggable from 'react-draggable';
-import SpinIcon from '@mui/icons-material/Bolt'
+import SpinIcon from '@mui/icons-material/Bolt';
 import { useForm, FormProvider } from 'react-hook-form';
 import RHFTextField from './RHFTextField';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { addNarrativeSchema } from '@info/schemas';
 import { trpc } from '.';
 import { z } from 'zod';
+import { ActionTypes, DialogContext, DialogDispatchContext } from './App';
 
 type AddNarrativeType = z.infer<typeof addNarrativeSchema>;
 
@@ -22,7 +23,7 @@ const DraggableAny: any = Draggable;
 function PaperComponent(props: PaperProps) {
   return (
     <DraggableAny
-      axis='both'
+      axis="both"
       handle="#draggable-dialog-title"
       cancel={'[class*="MuiDialogContent-root"]'}
     >
@@ -32,28 +33,29 @@ function PaperComponent(props: PaperProps) {
 }
 
 export default function DraggableDialog() {
-  const [fileDialogOpen, setFileDialogOpen] = React.useState<boolean>(true);
+  const { createNarrative } = useContext(DialogContext);
+  const dispatch = useContext(DialogDispatchContext);
   const { mutate: addNarrativeMutation } = trpc.addNarrative.useMutation();
   const methods = useForm<z.infer<typeof addNarrativeSchema>>({
     defaultValues: {
       summary: '',
       title: '',
-      abbreviation: '',
+      abbreviation: ''
     },
     reValidateMode: 'onChange',
-    resolver: zodResolver(addNarrativeSchema),
+    resolver: zodResolver(addNarrativeSchema)
   });
 
   const submitHandler = async (formData: AddNarrativeType) => {
     addNarrativeMutation(formData);
-  }
+  };
 
   return (
     <Dialog
       maxWidth="md"
-      open={fileDialogOpen}
+      open={createNarrative}
       onClose={() => {
-        setFileDialogOpen(false);
+        dispatch!(ActionTypes.CLOSE_NARRATIVE);
       }}
       PaperComponent={PaperComponent}
       aria-labelledby="draggable-dialog-title"
@@ -63,22 +65,40 @@ export default function DraggableDialog() {
         Create a Narrative
       </DialogTitle>
       <DialogContent>
-        <FormProvider {...methods} >
+        <FormProvider {...methods}>
           <Stack spacing={3} sx={{ paddingTop: 2 }}>
             <RHFTextField name="title" label="Narrative Title" />
-            <RHFTextField name="abbreviation" label="Narrative Abbreviation (12 characters max)" />
-            <RHFTextField name="summary" label="Narrative Summary" textFieldSpecificProps={{
-              multiline: true,
-              minRows: 10,
-            }} />
+            <RHFTextField
+              name="abbreviation"
+              label="Narrative Abbreviation (12 characters max)"
+            />
+            <RHFTextField
+              name="summary"
+              label="Narrative Summary"
+              textFieldSpecificProps={{
+                multiline: true,
+                minRows: 10
+              }}
+            />
           </Stack>
         </FormProvider>
       </DialogContent>
       <DialogActions sx={{ padding: 2 }}>
-        <Button variant="outlined" onClick={() => setFileDialogOpen(false)}>
+        <Button
+          variant="outlined"
+          onClick={() => {
+            dispatch!(ActionTypes.CLOSE_NARRATIVE);
+          }}
+        >
           Cancel
         </Button>
-        <Button variant="contained" onClick={methods.handleSubmit(submitHandler)} endIcon={<SpinIcon />}>Create</Button>
+        <Button
+          variant="contained"
+          onClick={methods.handleSubmit(submitHandler)}
+          endIcon={<SpinIcon />}
+        >
+          Create
+        </Button>
       </DialogActions>
     </Dialog>
   );

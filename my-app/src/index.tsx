@@ -4,8 +4,6 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import AddNarrativeDialog from './AddNarrativeDialog'; 
-import AddStoryDialog from './AddStoryDialog';
 import ListNarratives from './ListNarratives';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { httpLink } from '@trpc/client'
@@ -13,6 +11,7 @@ import { createTRPCReact } from '@trpc/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { AppRouter } from '@info/server';
 import SuperJSON from 'superjson';
+import DisplayNarrative from './DisplayNarrative';
 
 export const trpc = createTRPCReact<AppRouter>({});
 const trpcClient = trpc.createClient({
@@ -33,16 +32,12 @@ const router = createBrowserRouter([
         Component: () =>  <h1>Insert here</h1>,
       },
       {
-        path: '/narratives',
-        Component: AddNarrativeDialog,
-      },
-      {
         path: '/listNarratives',
         Component: ListNarratives,
       },
       {
-        path: '/stories',
-        Component: AddStoryDialog,
+        path: '/narrative/:narrativeId',
+        Component: DisplayNarrative 
       }
     ]
   }

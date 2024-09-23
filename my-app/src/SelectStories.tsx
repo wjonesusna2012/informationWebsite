@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import _ from 'lodash';
-import Pagination from '@mui/material/Pagination';
 import TablePagination from '@mui/material/TablePagination';
 import { SelectStoriesProps, TopicCardData } from './interfaces';
 import Accordion from '@mui/material/Accordion';

@@ -20,6 +20,7 @@ import { AddStoryType, addStorySchema } from '@info/schemas';
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { trpc } from '.';
+import { ActionTypes, DialogContext, DialogDispatchContext } from './App';
 
 const DraggableAny: any = Draggable;
 function PaperComponent(props: PaperProps) {
@@ -35,31 +36,32 @@ function PaperComponent(props: PaperProps) {
   );
 }
 
-export default function DraggableDialog() {
-  const [fileDialogOpen, setFileDialogOpen] = React.useState<boolean>(true);
+const AddStoryDialog: React.FC<{}> = () => {
+  const { createStory } = React.useContext(DialogContext);
+  const dispatch = React.useContext(DialogDispatchContext);
   const [filesSaved, setFilesSaved] = React.useState<Array<string>>([]);
-  const [anchorLink, setAnchorLink]= React.useState<string>('')
+  const [anchorLink, setAnchorLink] = React.useState<string>('');
   const { mutate: addStoryMutation } = trpc.addStory.useMutation();
   const methods = useForm<AddStoryType>({
     defaultValues: {
       storyTitle: '',
       date: new Date(),
       summary: '',
-      link: '',
+      link: ''
     },
     reValidateMode: 'onChange',
-    resolver: zodResolver(addStorySchema),
+    resolver: zodResolver(addStorySchema)
   });
   const submitStory = async (formData: AddStoryType) => {
     addStoryMutation(formData);
-    setFileDialogOpen(false);
-  }
+    // setFileDialogOpen(false);
+  };
   return (
     <Dialog
       maxWidth="md"
-      open={fileDialogOpen}
+      open={createStory}
       onClose={() => {
-        setFileDialogOpen(false);
+        dispatch!(ActionTypes.CLOSE_STORY);
       }}
       PaperComponent={PaperComponent}
       aria-labelledby="draggable-dialog-title"
@@ -73,15 +75,15 @@ export default function DraggableDialog() {
           <Stack spacing={3} sx={{ paddingTop: 2 }}>
             <RHFTextField label="Story Title" name="storyTitle" />
             <LocalizationProvider dateAdapter={AdapterLuxon}>
-              <RHFDatePicker label="Date" name="date"/>
+              <RHFDatePicker label="Date" name="date" />
             </LocalizationProvider>
-            <RHFTextField 
+            <RHFTextField
               label="Summary"
               name="summary"
               textFieldSpecificProps={{
                 multiline: true,
-                minRows: 5, 
-              }} 
+                minRows: 5
+              }}
             />
             <Button variant="contained" component="label">
               Upload Image
@@ -128,22 +130,39 @@ export default function DraggableDialog() {
                 ))}
               </ImageList>
             )}
-            <AnchorInputAndPreview anchorLink={anchorLink} setAnchorLink={(l) => {
-              setAnchorLink(l)
-            }} />
+            <AnchorInputAndPreview
+              anchorLink={anchorLink}
+              setAnchorLink={(l) => {
+                setAnchorLink(l);
+              }}
+            />
           </Stack>
         </FormProvider>
       </DialogContent>
       <DialogActions>
-        <Button autoFocus variant="outlined" onClick={() => {}}>
+        <Button
+          autoFocus
+          variant="outlined"
+          onClick={() => {
+            dispatch!(ActionTypes.CLOSE_STORY);
+          }}
+        >
           Cancel
         </Button>
-        <Button variant="contained" onClick={methods.handleSubmit(submitStory)} endIcon={<StoryIcon />}>Add</Button>
+        <Button
+          variant="contained"
+          onClick={methods.handleSubmit(submitStory)}
+          endIcon={<StoryIcon />}
+        >
+          Add
+        </Button>
       </DialogActions>
     </Dialog>
   );
-}
+};
+
+export default AddStoryDialog;
 
 // Young professionals and early leaders Kelly HoHertz meetings pickleball, round tables, assistance with L* candidates.
 // Tyler Young, University relations. Bring more awareness to charter. Scholarship programs. 1 or 2 a year.
-// Lauren membership committee attracting and retaining members. Programming deliver education content 
+// Lauren membership committee attracting and retaining members. Programming deliver education content

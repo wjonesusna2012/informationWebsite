@@ -27,6 +27,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const mongodb_1 = require("mongodb");
 const axios_1 = __importDefault(require("axios"));
 const htmlParser_1 = __importStar(require("./htmlParser"));
 const trpc_1 = require("./trpc");
@@ -36,6 +37,7 @@ const trpcExpress = __importStar(require("@trpc/server/adapters/express"));
 const zod_1 = require("zod");
 const database_1 = __importDefault(require("./database"));
 const db_1 = require("./utils/db");
+const mongoQueries_1 = require("./mongoQueries");
 const appRouter = (0, trpc_1.router)({
     addStory: trpc_1.publicProcedure
         .input(schemas_1.addStorySchema)
@@ -86,7 +88,7 @@ const appRouter = (0, trpc_1.router)({
         .mutation(async (opts) => {
         await database_1.default.connect();
         const db = database_1.default.db('NarrativesProject');
-        const collection = db.collection('narratives');
+        const collection = db.collection('tags');
         const { insertedId } = await collection.insertOne({
             ...opts.input,
             createdAt: new Date(),
@@ -101,11 +103,40 @@ const appRouter = (0, trpc_1.router)({
             createdBy: 'Yours Truly'
         };
     }),
-    // addStoryToNarrative: publicProcedure.input().output().mutation(async opts => {
-    //   await client.connect();
-    //   const db = client.db('NarrativesProject');
-    //   const collection = db.collection('narratives');
-    // }),
+    getTagList: trpc_1.publicProcedure.input(schemas_1.getTagsQuerySchema).query(async (opts) => {
+        const { searchString, userId } = opts.input;
+        const db = database_1.default.db('NarrativesProject');
+        const collection = db.collection('tags');
+        const validUserForSearch = !!userId && userId !== '';
+        const validStringForSearch = !!searchString && searchString !== '';
+        const filterObj = {
+            ...(validStringForSearch
+                ? { tagName: { $regex: new RegExp(`${searchString}`, 'i') } }
+                : {}),
+            ...(validUserForSearch
+                ? { tagName: { $regex: new RegExp(`${userId}`, 'i') } }
+                : {})
+        };
+        const results = await collection
+            .find(filterObj)
+            .toArray();
+        return results;
+    }),
+    addStoryToNarrative: trpc_1.publicProcedure
+        .input(schemas_1.addStoryToNarrative)
+        // .output()
+        .mutation(async (opts) => {
+        const { narrativeId, storyId } = opts.input;
+        await database_1.default.connect();
+        const db = database_1.default.db('NarrativesProject');
+        const collection = db.collection('narrativeStoryMapping');
+        await collection.insertOne({
+            narrativeId,
+            storyId,
+            createdAt: new Date(),
+            createdBy: 'Phil N. Later'
+        });
+    }),
     getNarrativesList: trpc_1.publicProcedure
         .output(zod_1.z.array(schemas_1.addNarrativeResponseSchema))
         .query(async (opts) => {
@@ -117,19 +148,16 @@ const appRouter = (0, trpc_1.router)({
     }),
     getNarrativeStories: trpc_1.publicProcedure
         .input(schemas_1.getNarrativeStoriesQuerySchema)
-        // .output(z.array(addNarrativeResponseSchema))
+        .output(schemas_1.getNarrativeStoriesResponseSchema)
         .query(async (opts) => {
         const { narrativeId } = opts.input;
         await database_1.default.connect();
         const db = database_1.default.db('NarrativesProject');
-        const collection = db.collection('narrativeStoryRelationships');
-        const storyCollection = db.collection('stories');
-        const results = await collection.find({ narrativeId }).toArray();
-        const stories = results.map((e) => e.storyId);
-        const storyResults = stories.map(async (s) => {
-            return await storyCollection.findOne({ _id: s });
-        });
-        return storyResults;
+        const collection = db.collection('narrativeStoryMapping');
+        const results = await collection
+            .aggregate((0, mongoQueries_1.narrativeWithStoriesAggregation)(new mongodb_1.ObjectId(narrativeId)))
+            .toArray();
+        return results;
     })
 });
 const expressRouter = (0, express_1.default)();
