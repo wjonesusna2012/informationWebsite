@@ -24,11 +24,11 @@ const TopicCard = ({
         maxWidth: 500,
         ...(selected ? { border: 2, borderColor: 'primary.main' } : {})
       }}
-      onClick={(e) => toggleStory(id)}
+      onClick={() => toggleStory(id)}
     >
       <CardMedia
         component="img"
-        image="https://picsum.photos/500/500"
+        image="https://picsum.photos/300/300"
         alt="Test Alt Text"
         onLoad={() => {
           setLoaded(true);

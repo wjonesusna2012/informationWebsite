@@ -15,7 +15,7 @@ export interface NarrativeAccordianProps {
   summary: string;
   details: string;
   abbreviation: string;
-  children?: Array<React.ReactElement>;
+  children?: Array<React.ReactElement> | React.ReactElement;
 }
 
 export interface MenuInterface {

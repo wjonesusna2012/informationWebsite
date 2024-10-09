@@ -1,24 +1,18 @@
-import React from 'react';
-import { ComponentStory, ComponentMeta } from '@storybook/react';
-import StoryGrid from '../StoryGrid';
-import { TopicCardProps, TopicCardData } from '../interfaces/index';
+import { Meta, StoryObj } from '@storybook/react';
+import { TopicCardData } from '../interfaces/index';
 import SelectStories from '../SelectStories';
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
-export default {
+const meta: Meta<typeof SelectStories> = {
   title: 'Select Story Carousel',
   component: SelectStories,
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
-  argTypes: {
-    backgroundColor: { control: 'color' }
-  }
-} as ComponentMeta<typeof SelectStories>;
+  argTypes: {}
+};
 
-// More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-const Template: ComponentStory<typeof SelectStories> = (args) => (
-  <SelectStories {...args} />
-);
+export default meta;
 
-export const GenericGrid = Template.bind({});
+type Story = StoryObj<typeof SelectStories>;
+
 const genericArgs = {
   id: 0,
   headerTitle: 'Featured',
@@ -29,36 +23,18 @@ const genericArgs = {
 };
 
 const range = [
-  1,
-  2,
-  3,
-  4,
-  5,
-  6,
-  7,
-  8,
-  9,
-  10,
-  11,
-  12,
-  13,
-  14,
-  15,
-  16,
-  17,
-  18,
-  19,
-  20
+  1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
 ];
-const args = {
-  availableStories: range.map<TopicCardData>((r) => {
-    return {
-      ...genericArgs,
-      id: r,
-      headerTitle: `Featured ${r}`,
-      selected: r % 2 === 0
-    };
-  })
-};
 
-GenericGrid.args = args;
+export const GenericGrid: Story = {
+  args: {
+    availableStories: range.map<TopicCardData>((r) => {
+      return {
+        ...genericArgs,
+        id: r,
+        headerTitle: `Featured ${r}`,
+        selected: r % 2 === 0
+      };
+    })
+  }
+};

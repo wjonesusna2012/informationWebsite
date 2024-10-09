@@ -13,10 +13,13 @@
     "build": "tsc -p .",
     "clean": "rm -rf ./dist && tsc -p .",
     "lint": "eslint . --ext .ts",
+    "watch": "yarn run build -- -watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
     "typescript": "^5.1.3"
   },
-  "files": ["/dist/**/*"]
+  "files": [
+    "/dist/**/*"
+  ]
 }

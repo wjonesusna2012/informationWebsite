@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "engines": {
-    "node": ">=16.0.0 <17.0.0"
+    "node": ">=16.0.0 <=21.0.0"
   },
   "dependencies": {
     "@emotion/react": "^11.5.0",
@@ -44,8 +44,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "storybook": "start-storybook -p 6006 -s public",
-    "build-storybook": "build-storybook -s public"
+    "storybook": "storybook dev -p 6006 public",
+    "build-storybook": "storybook build public"
   },
   "eslintConfig": {
     "extends": [
@@ -76,15 +76,19 @@
     ]
   },
   "devDependencies": {
+    "@chromatic-com/storybook": "^1",
     "@mui/docs": "^5.8.4",
-    "@storybook/addon-actions": "^6.3.12",
-    "@storybook/addon-essentials": "^6.3.12",
-    "@storybook/addon-links": "^6.3.12",
-    "@storybook/node-logger": "^6.3.12",
-    "@storybook/preset-create-react-app": "^3.2.0",
-    "@storybook/react": "^6.3.12",
+    "@storybook/addon-actions": "^8.3.2",
+    "@storybook/addon-essentials": "^8.3.2",
+    "@storybook/addon-links": "^8.3.2",
+    "@storybook/addon-mdx-gfm": "^8.3.2",
+    "@storybook/node-logger": "^8.3.2",
+    "@storybook/preset-create-react-app": "^8.3.2",
+    "@storybook/react": "^8.3.2",
+    "@storybook/react-webpack5": "^8.3.2",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
-    "prettier": "^2.2.1"
+    "prettier": "^2.2.1",
+    "storybook": "^8.3.2"
   }
 }

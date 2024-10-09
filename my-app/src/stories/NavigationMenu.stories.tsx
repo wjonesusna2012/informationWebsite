@@ -1,20 +1,20 @@
-import React from 'react';
-import { ComponentStory, ComponentMeta } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react';
 import NavigationMenu from '../NavigationMenu';
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
-export default {
+const meta: Meta<typeof NavigationMenu> = {
   title: 'Navigation Menu',
   component: NavigationMenu,
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
   argTypes: {
-    backgroundColor: { control: 'color' },
-  },
-} as ComponentMeta<typeof NavigationMenu>;
+    backgroundColor: { control: 'color' }
+  }
+};
+
+export default meta;
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-const Template: ComponentStory<typeof NavigationMenu> = () => <NavigationMenu />;
-
-export const Primary = Template.bind({});
-Primary.args = {
+type Story = StoryObj<typeof NavigationMenu>;
+export const GenericNavigationMenu: Story = {
+  args: {}
 };
