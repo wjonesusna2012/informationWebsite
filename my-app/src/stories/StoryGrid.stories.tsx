@@ -10,7 +10,6 @@ const meta: Meta<typeof StoryGrid> = {
 export default meta;
 
 const genericArgs = {
-  headerTitle: 'Featured',
   postTitle: 'This is a test post title',
   summary:
     'Lorem Ipsum Doelr sit net amit. Filler text to make this go on forever',
@@ -27,7 +26,6 @@ export const GenericGrid: Story = {
       return {
         ...genericArgs,
         id: r,
-        headerTitle: `Featured ${r}`
       };
     })
   }

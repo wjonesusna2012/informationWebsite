@@ -15,10 +15,14 @@ import {
   getTagsQuerySchema,
   getTagsResponseSchema,
   GetTagsResponseType,
+  addTagToNarrativeResponseSchema,
   AddTagResponseType,
   addStoryToNarrative,
   getNarrativeStoriesResponseSchema,
-  NarrativeStoryEntrySchemaType
+  NarrativeStoryEntrySchemaType,
+  addTagToNarrativeSchema,
+  AddTagToNarrativeResponseType,
+  NarrativeMongoSchemaType
 } from '@info/schemas';
 import cors from 'cors';
 import * as trpcExpress from '@trpc/server/adapters/express';
@@ -27,6 +31,7 @@ import client from './database';
 import { establishConnectionToCollection } from './utils/db';
 import { pick } from 'lodash';
 import { narrativeWithStoriesAggregation } from './mongoQueries';
+import { generateMongoQueryError } from './errorDefinitions';
 
 const appRouter = router({
   addStory: publicProcedure
@@ -94,6 +99,46 @@ const appRouter = router({
       };
     }),
 
+  addTagsToNarrative: publicProcedure
+    .input(addTagToNarrativeSchema)
+    .output(addTagToNarrativeResponseSchema)
+    .mutation(async (opts) => {
+      await client.connect();
+      const { narrativeId, tags } = opts.input;
+      const narrativeObjectId = new ObjectId(narrativeId);
+      const db = client.db('NarrativesProject');
+      const collection = db.collection('narratives');
+      const currentNarrative = await db
+        .collection('narratives')
+        .findOne({ _id: narrativeObjectId });
+      if (!currentNarrative) {
+      }
+      const { matchedCount, modifiedCount } = await collection.updateOne(
+        {
+          _id: narrativeObjectId
+        },
+        {
+          tags,
+          updatedAt: new Date(),
+          updatedBy: 'Phil N. Later'
+        }
+      );
+      if (matchedCount === 1 && modifiedCount === 1) {
+        const updatedNarrative =
+          await collection.findOne<NarrativeMongoSchemaType>({
+            _id: narrativeObjectId
+          });
+        if (!!updatedNarrative) {
+          return updatedNarrative;
+        }
+      } else {
+        throw generateMongoQueryError(
+          `Failed to update narrative with objectId ${narrativeId}.`
+        );
+      }
+      throw 'Help';
+    }),
+
   getTagList: publicProcedure.input(getTagsQuerySchema).query(async (opts) => {
     const { searchString, userId } = opts.input;
     const db = client.db('NarrativesProject');
@@ -116,7 +161,6 @@ const appRouter = router({
 
   addStoryToNarrative: publicProcedure
     .input(addStoryToNarrative)
-    // .output()
     .mutation(async (opts) => {
       const { narrativeId, storyId } = opts.input;
       await client.connect();

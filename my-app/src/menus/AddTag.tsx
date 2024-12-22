@@ -1,8 +1,7 @@
 import * as React from 'react';
 import Menu from '@mui/material/Menu';
 import { MenuInterface } from '../interfaces';
-import { Box, IconButton } from '@mui/material';
-import { Add } from '@mui/icons-material';
+import { Box, Button } from '@mui/material';
 import { FormProvider, useForm } from 'react-hook-form';
 import RHFTextField from '../RHFTextField';
 import { addTagSchema, AddTagType } from '@info/schemas';
@@ -57,12 +56,13 @@ const AddTag: React.FC<MenuInterface> = ({
           />
         </Box>
         <Box sx={{}}>
-          <IconButton
-            sx={{ margin: 2 }}
+          <Button
+            variant="contained"
+            sx={{ margin: 1 }}
             onClick={methods.handleSubmit(submitTag)}
           >
-            <Add />
-          </IconButton>
+            Add Tag
+          </Button>
         </Box>
       </FormProvider>
     </Menu>

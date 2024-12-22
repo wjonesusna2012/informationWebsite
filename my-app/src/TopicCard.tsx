@@ -9,7 +9,6 @@ import { TopicCardProps } from './interfaces';
 
 const TopicCard = ({
   id,
-  headerTitle,
   postTitle,
   summary,
   date,
@@ -21,6 +20,8 @@ const TopicCard = ({
     <Card
       variant="outlined"
       sx={{
+        boxShadow: '8px 8px 8px grey',
+        textAlign: 'start',
         maxWidth: 500,
         ...(selected ? { border: 2, borderColor: 'primary.main' } : {})
       }}
@@ -42,19 +43,22 @@ const TopicCard = ({
         style={loaded ? { display: 'none' } : {}}
       />
       <CardContent>
-        <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-          {headerTitle}
-        </Typography>
         <Typography variant="h5" component="div">
           {postTitle}
         </Typography>
         <Typography sx={{ mb: 1.5 }} color="text.secondary">
           {summary}
         </Typography>
-        <Typography variant="body2">{date}</Typography>
+        <Typography variant="body2">
+          {new Date(date).toLocaleDateString()}
+        </Typography>
       </CardContent>
       <CardActions>
-        <Button size="small">Learn More</Button>
+        <Button size="small">
+          <a style={{ textDecoration: 'none' }} href="google.com">
+            Learn More
+          </a>
+        </Button>
       </CardActions>
     </Card>
   );

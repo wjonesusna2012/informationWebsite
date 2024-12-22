@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import type { ObjectId } from 'bson';
 
-export const addNarrativeResponseSchema = z.object({
+export const addTagToNarrativeResponseSchema = z.object({
   _id: z.any(),
   title: z.string(),
   abbreviation: z.string(),
@@ -11,8 +11,8 @@ export const addNarrativeResponseSchema = z.object({
   tags: z.array(z.string()).optional()
 });
 
-export type AddNarrativeResponseType = z.infer<
-  typeof addNarrativeResponseSchema
+export type AddTagToNarrativeResponseType = z.infer<
+  typeof addTagToNarrativeResponseSchema
 >;
 
-export default addNarrativeResponseSchema;
+export default addTagToNarrativeResponseSchema;

@@ -15,6 +15,7 @@ export interface NarrativeAccordianProps {
   summary: string;
   details: string;
   abbreviation: string;
+  tags: Array<string>;
   children?: Array<React.ReactElement> | React.ReactElement;
 }
 
@@ -30,7 +31,6 @@ export interface SelectStoriesProps {
 
 export interface TopicCardProps {
   id: number;
-  headerTitle: string;
   postTitle: string;
   summary: string;
   date: string;
@@ -39,7 +39,6 @@ export interface TopicCardProps {
 }
 export interface TopicCardData {
   id: number;
-  headerTitle: string;
   postTitle: string;
   summary: string;
   date: string;

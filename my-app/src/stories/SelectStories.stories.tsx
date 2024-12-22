@@ -15,7 +15,6 @@ type Story = StoryObj<typeof SelectStories>;
 
 const genericArgs = {
   id: 0,
-  headerTitle: 'Featured',
   postTitle: 'This is a test post title',
   summary:
     'Lorem Ipsum Doelr sit net amit. Filler text to make this go on forever',
@@ -32,7 +31,6 @@ export const GenericGrid: Story = {
       return {
         ...genericArgs,
         id: r,
-        headerTitle: `Featured ${r}`,
         selected: r % 2 === 0
       };
     })

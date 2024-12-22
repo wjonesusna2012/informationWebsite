@@ -134,7 +134,7 @@ const NavigationMenu = () => {
             disablePortal
             id="combo-box-demo"
             options={autocompleteOptions}
-            sx={{ width: 300, padding: 1 }}
+            sx={{ width: 300, padding: 1, color: 'white' }}
             renderInput={(params) => (
               <TextField
                 {...params}

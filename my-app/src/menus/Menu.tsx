@@ -14,17 +14,15 @@ const NavMenu: React.FC<MenuInterface> = ({
     anchorEl={anchorElement}
     open={open}
     onClose={closeHandler}
-    variant='menu'
+    variant="menu"
   >
     <MenuItem>
-      <Link to='/listNarratives'>
+      <Link to="/listNarratives" onClick={() => closeHandler()}>
         View Narratives
       </Link>
     </MenuItem>
     <MenuItem>
-      <Link to='/'>
-        Share Narratives
-      </Link>
+      <Link to="/" onClick={() => closeHandler()}>Share Narratives</Link>
     </MenuItem>
   </Menu>
 );

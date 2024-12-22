@@ -42,3 +42,10 @@
 .MuiOutlinedInput-root {
   color: white;
 }
+
+.MuiInputBase-input {
+  color: white;
+}
+.MuiOutlinedInput-input {
+  color: white;
+}

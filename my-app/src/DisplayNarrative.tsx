@@ -1,5 +1,5 @@
 import React from 'react';
-// import CardAccordion from './NarrativeAccordian';
+// import NarrativeAccordion from './NarrativeAccordian';
 import { Stack } from '@mui/material';
 import { CircularProgress } from '@mui/material';
 import { trpc } from '.';
