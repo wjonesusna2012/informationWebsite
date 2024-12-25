@@ -1,6 +1,7 @@
 import { dirname, join } from "path";
 module.exports = {
   stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|ts|tsx)'],
+  staticDirs: ['../public'],
 
   addons: [
     getAbsolutePath("@storybook/addon-links"),
@@ -41,8 +42,3 @@ module.exports = {
 function getAbsolutePath(value) {
   return dirname(require.resolve(join(value, "package.json")));
 }
-
-// Acct: 004604280154
-// Routing: 026009593 
-
-// Amy Zhou 
