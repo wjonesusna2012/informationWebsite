@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const addStoryResponseSchema = z.object({
+export const getStoryResponseSchema = z.object({
   _id: z.string(),
   storyTitle: z.string(),
   date: z.date(),
@@ -10,4 +10,4 @@ export const addStoryResponseSchema = z.object({
   createdBy: z.string(),
 });
 
-export default addStoryResponseSchema;
+export default getStoryResponseSchema;

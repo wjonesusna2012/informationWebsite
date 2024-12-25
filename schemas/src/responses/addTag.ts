@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const addTagResponseSchema = z.object({
-    _id: z.any(),
+    _id: z.string(),
     tagName: z.string(),
     tagTitle: z.string(),
     createdAt: z.date(),
