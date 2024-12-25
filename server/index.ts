@@ -13,8 +13,6 @@ import {
   addTagSchema,
   AddNarrativeResponseType,
   getTagsQuerySchema,
-  getTagsResponseSchema,
-  GetTagsResponseType,
   addTagToNarrativeResponseSchema,
   AddTagResponseType,
   addStoryToNarrative,
@@ -32,6 +30,7 @@ import { establishConnectionToCollection } from './utils/db';
 import { pick } from 'lodash';
 import { narrativeWithStoriesAggregation } from './mongoQueries';
 import { generateMongoQueryError } from './errorDefinitions';
+import { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
 
 const appRouter = router({
   addStory: publicProcedure
@@ -205,6 +204,8 @@ const appRouter = router({
 });
 
 export type AppRouter = typeof appRouter;
+export type RouterInput = inferRouterInputs<AppRouter>;
+export type RouterOutput = inferRouterOutputs<AppRouter>; 
 
 const expressRouter = express();
 
