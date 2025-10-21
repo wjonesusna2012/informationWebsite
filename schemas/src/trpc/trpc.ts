@@ -2,11 +2,11 @@ import { initTRPC, TRPCError } from '@trpc/server';
 import * as trpcExpress from '@trpc/server/adapters/express';
 import SuperJSON from 'superjson';
 import { withDb } from './dbMiddleware';
-import { Request, Response } from 'express';
+import { type Request, type Response } from 'express';
 import { MongoClient } from 'mongodb';
 
-const client = new MongoClient('mongodb://localhost:27017');
-
+const db = new MongoClient('mongodb://localhost:27017');
+type User = { id: string; email: string };
 // This is a placeholder for your token validation logic.
 const getUserFromToken = (token: string | undefined) => {
   if (!token) {
@@ -25,18 +25,16 @@ const getUserFromToken = (token: string | undefined) => {
   }
 };
 
-const consolidateContext = async (
-  req: Request,
-  res: Response,
-  user: ReturnType<typeof getUserFromToken>
-) => {
-  await client.connect();
-  const db = client.db('NarrativesProject');
+const consolidateContext = async (opts: {
+  req: Request;
+  res: Response;
+  user: User | null;
+}) => {
   return {
     db,
-    req,
-    res,
-    user
+    req: opts.req,
+    res: opts.res,
+    user: opts.user
   };
 };
 
