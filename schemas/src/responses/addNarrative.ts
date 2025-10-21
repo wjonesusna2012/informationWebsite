@@ -1,15 +1,9 @@
 import { z } from 'zod';
 import type { ObjectId } from 'bson';
+import { addNarrativeSchema } from '../requests';
+import { mongoMarkupSchema } from '../common';
 
-export const addNarrativeResponseSchema = z.object({
-  _id: z.string(),
-  title: z.string(),
-  abbreviation: z.string(),
-  summary: z.string(),
-  createdAt: z.date(),
-  createdBy: z.string(),
-  tags: z.array(z.string()).optional()
-});
+export const addNarrativeResponseSchema = addNarrativeSchema.merge(mongoMarkupSchema);
 
 export type AddNarrativeResponseType = z.infer<
   typeof addNarrativeResponseSchema

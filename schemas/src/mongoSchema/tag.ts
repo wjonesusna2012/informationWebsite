@@ -1,9 +1,6 @@
 import { z } from 'zod';
 import { mongoMarkupSchema } from '../common';
-import { addTagSchema } from '../requests';
+import AddTagResponseSchema from '../responses/addTag';
 
-export const tagMongoSchema = addTagSchema
-  .merge(mongoMarkupSchema)
-  .merge(z.object({ tags: z.array(z.string()).optional() }));
-
+export const tagMongoSchema = AddTagResponseSchema;
 export type TagMongoSchemaType = z.infer<typeof tagMongoSchema>;

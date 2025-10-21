@@ -28,7 +28,6 @@ const NavigationMenu = () => {
   const openAddTag = Boolean(addTagAnchorEl);
 
   const autocompleteOptions = options?.map((o) => o.tagName) ?? [];
-  console.log(autocompleteOptions);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);

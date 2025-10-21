@@ -4,3 +4,4 @@ export * from './addTag';
 export * from './getNarrativeStories';
 export * from './getTags';
 export * from './addTagToNarrative';
+export * from './addTagToStory';

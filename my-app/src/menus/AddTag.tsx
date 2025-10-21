@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Menu from '@mui/material/Menu';
 import { MenuInterface } from '../interfaces';
-import { Box, Button } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import { FormProvider, useForm } from 'react-hook-form';
 import RHFTextField from '../RHFTextField';
 import { addTagSchema, AddTagType } from '@info/schemas';
@@ -37,6 +37,9 @@ const AddTag: React.FC<MenuInterface> = ({
       sx={{ alignItems: 'center', display: 'flex' }}
     >
       <FormProvider {...methods}>
+        <Typography variant="h6" sx={{ margin: 1 }}>
+          Create Tag
+        </Typography>
         <Box sx={{ alignItems: 'center', display: 'flex' }}>
           <RHFTextField
             label="Tag Name"
@@ -50,7 +53,9 @@ const AddTag: React.FC<MenuInterface> = ({
           <RHFTextField
             label="Tag Description"
             textFieldSpecificProps={{
-              sx: { margin: 1, marginBottom: 0 }
+              sx: { margin: 1, marginBottom: 0 },
+              multiline: true,
+              minRows: 3
             }}
             name="tagText"
           />

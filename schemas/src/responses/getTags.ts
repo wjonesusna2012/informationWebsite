@@ -1,14 +1,7 @@
 import { z } from 'zod';
+import addTagResponseSchema from './addTag';
 
-export const getTagsResponseSchema = z.array(
-  z.object({
-    _id: z.string(),
-    tagName: z.string(),
-    tagTitle: z.string(),
-    createdAt: z.date(),
-    createdBy: z.string()
-  })
-);
+export const getTagsResponseSchema = z.array(addTagResponseSchema);
 
 export type GetTagsResponseType = z.infer<typeof getTagsResponseSchema>;
 

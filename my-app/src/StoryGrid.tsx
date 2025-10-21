@@ -7,7 +7,7 @@ const StoryGrid: React.FC<StoryGridProps> = ({ cardArray }) => {
   return (
     <Grid container spacing={3} sx={{ marginTop: 0 }}>
       {cardArray.map((cA) => (
-        <Grid item xs={6} md={4} xl={3}>
+        <Grid key={cA.id} item xs={6} md={4} xl={3}>
           <TopicCard {...cA} />
         </Grid>
       ))}
