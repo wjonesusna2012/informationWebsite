@@ -14,7 +14,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { addNarrativeSchema } from '@info/schemas';
 import { trpc } from '.';
 import { z } from 'zod';
-import { ActionTypes, DialogContext, DialogDispatchContext } from './App';
+import { ActionTypes, DialogStateContext, DialogDispatchContext } from './contexts/DialogContext';
 
 type AddNarrativeType = z.infer<typeof addNarrativeSchema>;
 
@@ -33,7 +33,7 @@ function PaperComponent(props: PaperProps) {
 }
 
 export default function DraggableDialog() {
-  const { createNarrative } = useContext(DialogContext);
+  const { createNarrative } = useContext(DialogStateContext);
   const dispatch = useContext(DialogDispatchContext);
   const { mutate: addNarrativeMutation } = trpc.addNarrative.useMutation();
   const methods = useForm<z.infer<typeof addNarrativeSchema>>({

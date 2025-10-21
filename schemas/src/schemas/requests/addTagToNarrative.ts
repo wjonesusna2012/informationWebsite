@@ -7,4 +7,3 @@ export const addTagToNarrativeSchema = z.object({
 
 export type AddTagToNarrativeType = z.infer<typeof addTagToNarrativeSchema>;
 
-export default addTagToNarrativeSchema;

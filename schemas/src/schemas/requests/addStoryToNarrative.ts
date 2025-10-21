@@ -7,4 +7,3 @@ export const addStoryToNarrative = z.object({
 
 export type AddNarrativeToStoryType = z.infer<typeof addStoryToNarrative>;
 
-export default addStoryToNarrative;

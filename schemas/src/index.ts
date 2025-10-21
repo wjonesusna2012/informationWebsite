@@ -1,3 +1,4 @@
-export * from './requests';
-export * from './responses';
-export * from './mongoSchema';
+export * from './schemas/requests';
+export * from './schemas/responses';
+export * from './schemas/mongoSchema';
+export * from './schemas/';

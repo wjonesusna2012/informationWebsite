@@ -20,7 +20,7 @@ import { AddStoryType, addStorySchema } from '@info/schemas';
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { trpc } from '.';
-import { ActionTypes, DialogContext, DialogDispatchContext } from './App';
+import { ActionTypes, DialogStateContext, DialogDispatchContext } from './contexts/DialogContext';
 
 const DraggableAny: any = Draggable;
 function PaperComponent(props: PaperProps) {
@@ -37,7 +37,7 @@ function PaperComponent(props: PaperProps) {
 }
 
 const AddTagDialog: React.FC<{}> = () => {
-  const { createStory } = React.useContext(DialogContext);
+  const { createStory } = React.useContext(DialogStateContext);
   const dispatch = React.useContext(DialogDispatchContext);
   const [filesSaved, setFilesSaved] = React.useState<Array<string>>([]);
   const [anchorLink, setAnchorLink] = React.useState<string>('');

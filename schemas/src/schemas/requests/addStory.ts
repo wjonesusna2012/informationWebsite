@@ -16,4 +16,3 @@ export const addStorySchema = z.object({
 
 export type AddStoryType = z.infer<typeof addStorySchema>;
 
-export default addStorySchema;

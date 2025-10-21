@@ -15,7 +15,7 @@ const initialValues = {
   addTag: false,
 };
 
-type DialogContextType = typeof initialValues;
+export type DialogContextType = typeof initialValues;
 
 const reducerFunction = (dialog: DialogContextType, action: ActionTypes): DialogContextType => {
   switch (action) {
@@ -36,8 +36,8 @@ const reducerFunction = (dialog: DialogContextType, action: ActionTypes): Dialog
   }
 };
 
-const DialogStateContext = createContext<DialogContextType>(initialValues);
-const DialogDispatchContext = createContext<React.Dispatch<ActionTypes> | null>(null);
+export const DialogStateContext = createContext<DialogContextType>(initialValues);
+export const DialogDispatchContext = createContext<React.Dispatch<ActionTypes> | null>(null);
 
 export const DialogProvider = ({ children }: { children: React.ReactNode }) => {
   const [dialog, dispatch] = useReducer(reducerFunction, initialValues);

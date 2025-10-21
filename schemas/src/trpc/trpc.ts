@@ -1,9 +1,13 @@
 import { initTRPC, TRPCError } from '@trpc/server';
 import * as trpcExpress from '@trpc/server/adapters/express';
-import { OpenApiMeta } from 'trpc-to-openapi';
+import SuperJSON from 'superjson';
+import { withDb } from './dbMiddleware';
+import { Request, Response } from 'express';
+import { MongoClient } from 'mongodb';
+
+const client = new MongoClient('mongodb://localhost:27017');
 
 // This is a placeholder for your token validation logic.
-// In a real app, you'd use a library like 'jsonwebtoken' or an OAuth provider's SDK.
 const getUserFromToken = (token: string | undefined) => {
   if (!token) {
     return null;
@@ -21,21 +25,44 @@ const getUserFromToken = (token: string | undefined) => {
   }
 };
 
-export const createContext = ({
-  req,
-  res
-}: trpcExpress.CreateExpressContextOptions) => {
-  const token = req.headers.authorization?.split(' ')[1]; // Bearer <token>
-  const user = getUserFromToken(token);
-
+const consolidateContext = async (
+  req: Request,
+  res: Response,
+  user: ReturnType<typeof getUserFromToken>
+) => {
+  await client.connect();
+  const db = client.db('NarrativesProject');
   return {
+    db,
     req,
     res,
     user
   };
 };
 
-const t = initTRPC.context<typeof createContext>().meta<OpenApiMeta>().create();
+export const createContext = async ({
+  req,
+  res
+}: trpcExpress.CreateExpressContextOptions): Promise<{
+  req: typeof req;
+  res: typeof res;
+  user: ReturnType<typeof getUserFromToken>;
+  db: Awaited<ReturnType<typeof withDb>>;
+}> => {
+  const token = req.headers.authorization?.split(' ')[1]; // Bearer <token>
+  const user = getUserFromToken(token);
+  const db = await withDb();
+  return {
+    req,
+    res,
+    user,
+    db
+  };
+};
+
+const t = initTRPC.context<typeof consolidateContext>().create({
+  transformer: SuperJSON
+});
 
 export const router = t.router;
 export const publicProcedure = t.procedure;
@@ -52,4 +79,5 @@ const isAuthenticated = t.middleware(({ ctx, next }) => {
   });
 });
 
-export const protectedProcedure = t.procedure.use(isAuthenticated);
+export const protectedProcedure: typeof t.procedure =
+  t.procedure.use(isAuthenticated);

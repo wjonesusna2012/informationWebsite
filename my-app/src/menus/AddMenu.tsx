@@ -2,7 +2,7 @@ import * as React from 'react';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { MenuInterface } from '../interfaces';
-import { ActionTypes, DialogDispatchContext } from '../App';
+import { ActionTypes, DialogDispatchContext } from '../contexts/DialogContext';
 
 const AddMenu: React.FC<MenuInterface> = ({
   open,

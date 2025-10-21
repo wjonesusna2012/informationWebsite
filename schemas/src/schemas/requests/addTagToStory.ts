@@ -7,4 +7,3 @@ export const addTagToStorySchema = z.object({
 
 export type AddTagToStoryType = z.infer<typeof addTagToStorySchema>;
 
-export default addTagToStorySchema;

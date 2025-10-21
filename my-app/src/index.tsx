@@ -6,22 +6,22 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import ListNarratives from './ListNarratives';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { httpLink } from '@trpc/client'
+import { httpLink } from '@trpc/client';
 import { createTRPCReact } from '@trpc/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { AppRouter } from '@info/server';
 import SuperJSON from 'superjson';
 import DisplayNarrative from './DisplayNarrative';
 
 export const trpc = createTRPCReact<AppRouter>({});
 const trpcClient = trpc.createClient({
-  transformer: SuperJSON,
   links: [
     httpLink({
       url: 'http://localhost:4000/trpc',
-    }),
-  ],
-})
+      transformer: SuperJSON
+    })
+  ]
+});
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
   {
@@ -29,19 +29,19 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        Component: () =>  <h1>Insert here</h1>,
+        Component: () => <h1>Insert here</h1>
       },
       {
         path: '/listNarratives',
-        Component: ListNarratives,
+        Component: ListNarratives
       },
       {
         path: '/narrative/:narrativeId',
-        Component: DisplayNarrative 
+        Component: DisplayNarrative
       }
     ]
   }
-])
+]);
 
 const rootNode = document.getElementById('root');
 const root = createRoot(rootNode as Element);
@@ -49,18 +49,10 @@ root.render(
   <React.StrictMode>
     <trpc.Provider queryClient={queryClient} client={trpcClient}>
       <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router}/>
-        <ReactQueryDevtools
-            initialIsOpen
-            position="bottom-left"
-            toggleButtonProps={{
-              style: {
-                marginLeft: '5.5rem',
-                transform: `scale(.7)`,
-                transformOrigin: 'bottom left',
-              },
-            }}
-          />
+        <RouterProvider router={router} />
+        <div style={{ marginLeft: '5.5rem', transform: 'scale(.7)', transformOrigin: 'bottom left' }}>
+          <ReactQueryDevtools initialIsOpen position="bottom" />
+        </div>
       </QueryClientProvider>
     </trpc.Provider>
   </React.StrictMode>

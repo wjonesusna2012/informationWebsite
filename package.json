@@ -2,17 +2,20 @@
   "dependencies": {
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
-    "prettier": "^2.7.1"
+    "prettier": "^2.7.1",
+    "zod": "^4"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.190"
+  },
+  "resolutions": {
+    "zod": "4.1.12"
   },
   "private": true,
   "workspaces": [
     "schemas",
     "server",
-    "my-app",
-    "api-docs"
+    "my-app"
   ],
   "packageManager": "yarn@4.4.1+sha224.fd21d9eb5fba020083811af1d4953acc21eeb9f6ff97efd1b3f9d4de"
 }
