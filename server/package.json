@@ -7,13 +7,14 @@
   },
   "dependencies": {
     "@info/schemas": "*",
-    "@trpc/server": "^10.28.0",
+    "@trpc/server": "^11",
     "axios": "^0.27.2",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "mongodb": "^5.6.0",
     "node-html-parser": "^5.4.2",
     "superjson": "^1.12.3",
+    "trpc-to-openapi": "^3.1.0",
     "tsc": "^2.0.4"
   },
   "devDependencies": {

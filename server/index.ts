@@ -13,18 +13,15 @@ import {
   addTagSchema,
   AddNarrativeResponseType,
   getTagsQuerySchema,
-  addTagToNarrativeResponseSchema,
   AddTagResponseType,
   addStoryToNarrative,
   getNarrativeStoriesResponseSchema,
   NarrativeStoryEntrySchemaType,
   addTagToNarrativeSchema,
-  AddTagToNarrativeResponseType,
   NarrativeMongoSchemaType,
   addTagToStorySchema,
-  addTagToStoryResponseSchema,
-  AddTagToStoryResponseType,
-  StoryMongoSchemaType
+  StoryMongoSchemaType,
+  TagMongoSchemaType
 } from '@info/schemas';
 import cors from 'cors';
 import * as trpcExpress from '@trpc/server/adapters/express';
@@ -35,6 +32,7 @@ import { pick } from 'lodash';
 import { narrativeWithStoriesAggregation } from './mongoQueries';
 import { generateMongoQueryError } from './errorDefinitions';
 import { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
+import { TRPCError } from '@trpc/server';
 
 const appRouter = router({
   addStory: publicProcedure
@@ -89,24 +87,44 @@ const appRouter = router({
       await client.connect();
       const db = client.db('NarrativesProject');
       const collection = db.collection('tags');
-      const { insertedId } = await collection.insertOne({
-        ...opts.input,
-        createdAt: new Date(),
-        createdBy: 'Phil N. Later'
-      });
-      const insertedObject = await collection.findOne(insertedId);
-      return {
-        _id: insertedId.toString(), // Ensure _id is explicitly a string
-        tagTitle: 'Title Test',
-        tagName: "Lorem Ipsum I forget I don't have internet",
-        createdAt: new Date(),
-        createdBy: 'Yours Truly'
-      };
+      try {
+        const { insertedId, acknowledged } = await collection.insertOne({
+          ...opts.input,
+          createdAt: new Date(),
+          createdBy: 'Phil N. Later'
+        });
+        if (!acknowledged) {
+          throw new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: `Write to MongoDb instance not acknowledged for tag: ${insertedId}`
+          });
+        }
+        const insertedObject = await collection.findOne<TagMongoSchemaType>(
+          insertedId
+        );
+
+        if (!insertedObject) {
+          throw new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: `Failed to retrieve newly created tag with id: ${insertedId}`
+          });
+        }
+
+        return insertedObject;
+      } catch (error) {
+        if (error instanceof TRPCError) {
+          throw error;
+        }
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'An unexpected error occurred while adding the tag.',
+          cause: error
+        });
+      }
     }),
 
   addTagsToNarrative: publicProcedure
     .input(addTagToNarrativeSchema)
-    .output(addTagToNarrativeResponseSchema)
     .mutation(async (opts) => {
       await client.connect();
       const { narrativeId, tags } = opts.input;
@@ -150,18 +168,14 @@ const appRouter = router({
     }),
 
   getTagList: publicProcedure.input(getTagsQuerySchema).query(async (opts) => {
-    const { searchString, userId } = opts.input;
+    const { searchString } = opts.input;
     const db = client.db('NarrativesProject');
     const collection = db.collection('tags');
-    const validUserForSearch = !!userId && userId !== '';
     const validStringForSearch = !!searchString && searchString !== '';
     const filterObj = {
       ...(validStringForSearch
         ? { tagName: { $regex: new RegExp(`${searchString}`, 'i') } }
         : {}),
-      ...(validUserForSearch
-        ? { tagName: { $regex: new RegExp(`${userId}`, 'i') } }
-        : {})
     };
     const results = await collection
       .find<AddTagResponseType>(filterObj)
@@ -215,7 +229,6 @@ const appRouter = router({
 
   addTagsToStory: publicProcedure
     .input(addTagToStorySchema)
-    .output(addTagToStoryResponseSchema)
     .mutation(async (opts) => {
       await client.connect();
       const { storyId, tags } = opts.input;
