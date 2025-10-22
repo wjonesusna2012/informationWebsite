@@ -12,9 +12,14 @@ import { useForm, FormProvider } from 'react-hook-form';
 import RHFTextField from './RHFTextField';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { addNarrativeSchema } from '@info/schemas';
-import { trpc } from '.';
 import { z } from 'zod';
-import { ActionTypes, DialogStateContext, DialogDispatchContext } from './contexts/DialogContext';
+import {
+  ActionTypes,
+  DialogStateContext,
+  DialogDispatchContext
+} from './contexts/DialogContext';
+import { useTRPC } from '.';
+import { useMutation } from '@tanstack/react-query';
 
 type AddNarrativeType = z.infer<typeof addNarrativeSchema>;
 
@@ -32,10 +37,28 @@ function PaperComponent(props: PaperProps) {
   );
 }
 
-export default function DraggableDialog() {
+const DraggableDialog = () => {
+  const trpc = useTRPC();
   const { createNarrative } = useContext(DialogStateContext);
   const dispatch = useContext(DialogDispatchContext);
-  const { mutate: addNarrativeMutation } = trpc.addNarrative.useMutation();
+
+  // Define the tRPC mutation
+  const addNarrativeMutation = useMutation(
+    trpc.addNarrative.mutationOptions({
+      onSuccess: (data) => {
+        console.log('Narrative created successfully:', data);
+        // Close the dialog on success
+        dispatch!(ActionTypes.CLOSE_NARRATIVE);
+        // Reset the form
+        methods.reset();
+      },
+      onError: (error) => {
+        console.error('Error creating narrative:', error);
+        // Handle error (you might want to show a toast notification)
+      }
+    })
+  );
+
   const methods = useForm<z.infer<typeof addNarrativeSchema>>({
     defaultValues: {
       summary: '',
@@ -47,7 +70,7 @@ export default function DraggableDialog() {
   });
 
   const submitHandler = async (formData: AddNarrativeType) => {
-    addNarrativeMutation(formData);
+    addNarrativeMutation.mutate(formData);
   };
 
   return (
@@ -102,4 +125,6 @@ export default function DraggableDialog() {
       </DialogActions>
     </Dialog>
   );
-}
+};
+
+export default DraggableDialog;

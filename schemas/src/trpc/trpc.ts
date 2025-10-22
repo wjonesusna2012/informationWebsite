@@ -25,18 +25,18 @@ const getUserFromToken = (token: string | undefined) => {
   }
 };
 
-const consolidateContext = async (opts: {
-  req: Request;
-  res: Response;
-  user: User | null;
-}) => {
-  return {
-    db,
-    req: opts.req,
-    res: opts.res,
-    user: opts.user
-  };
-};
+// const consolidateContext = async (opts: {
+//   req: Request;
+//   res: Response;
+//   user: User | null;
+// }) => {
+//   return {
+//     db,
+//     req: opts.req,
+//     res: opts.res,
+//     user: opts.user
+//   };
+// };
 
 export const createContext = async ({
   req,
@@ -58,7 +58,7 @@ export const createContext = async ({
   };
 };
 
-const t = initTRPC.context<typeof consolidateContext>().create({
+const t = initTRPC.context<typeof createContext>().create({
   transformer: SuperJSON
 });
 

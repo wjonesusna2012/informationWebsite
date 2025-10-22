@@ -1,26 +1,31 @@
-import * as React from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { addStorySchema, AddStoryType } from '@info/schemas';
+import StoryIcon from '@mui/icons-material/AutoStoriesRounded';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { ImageList, ImageListItem, ImageListItemBar } from '@mui/material';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
-import Stack from '@mui/material/Stack';
 import DialogContent from '@mui/material/DialogContent';
-import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
-import { LocalizationProvider } from '@mui/x-date-pickers';
 import DialogTitle from '@mui/material/DialogTitle';
-import Paper, { PaperProps } from '@mui/material/Paper';
-import Draggable from 'react-draggable';
-import { ImageList, ImageListItem, ImageListItemBar } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
-import DeleteIcon from '@mui/icons-material/Delete';
-import StoryIcon from '@mui/icons-material/AutoStoriesRounded';
-import AnchorInputAndPreview from './AnchorInputAndPreview';
-import RHFTextField from './RHFTextField';
-import RHFDatePicker from './RHFDatePicker';
-import { AddStoryType, addStorySchema } from '@info/schemas';
+import Paper, { PaperProps } from '@mui/material/Paper';
+import Stack from '@mui/material/Stack';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
+import { useMutation } from '@tanstack/react-query';
+import * as React from 'react';
+import Draggable from 'react-draggable';
 import { FormProvider, useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { trpc } from '.';
-import { ActionTypes, DialogStateContext, DialogDispatchContext } from './contexts/DialogContext';
+import { useTRPC } from '.';
+import AnchorInputAndPreview from './AnchorInputAndPreview';
+import {
+  ActionTypes,
+  DialogDispatchContext,
+  DialogStateContext
+} from './contexts/DialogContext';
+import RHFDatePicker from './RHFDatePicker';
+import RHFTextField from './RHFTextField';
 
 const DraggableAny: any = Draggable;
 function PaperComponent(props: PaperProps) {
@@ -37,11 +42,14 @@ function PaperComponent(props: PaperProps) {
 }
 
 const AddTagDialog: React.FC<{}> = () => {
+  const trpc = useTRPC();
   const { createStory } = React.useContext(DialogStateContext);
   const dispatch = React.useContext(DialogDispatchContext);
   const [filesSaved, setFilesSaved] = React.useState<Array<string>>([]);
   const [anchorLink, setAnchorLink] = React.useState<string>('');
-  const { mutate: addStoryMutation } = trpc.addStory.useMutation();
+  const { mutate: addStoryMutation } = useMutation(
+    trpc.addStory.mutationOptions()
+  );
   const methods = useForm<AddStoryType>({
     defaultValues: {
       storyTitle: '',

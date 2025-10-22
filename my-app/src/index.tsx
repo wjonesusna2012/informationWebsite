@@ -6,15 +6,17 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import ListNarratives from './ListNarratives';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { httpLink } from '@trpc/client';
-import { createTRPCReact } from '@trpc/react-query';
+import { createTRPCClient, httpLink } from '@trpc/client';
+import { createTRPCContext } from '@trpc/tanstack-react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { AppRouter } from '@info/server';
+import { type AppRouter } from '@info/schemas';
 import SuperJSON from 'superjson';
 import DisplayNarrative from './DisplayNarrative';
 
-export const trpc = createTRPCReact<AppRouter>({});
-const trpcClient = trpc.createClient({
+export const { TRPCProvider, useTRPC, useTRPCClient } =
+  createTRPCContext<AppRouter>();
+
+const trpcClient = createTRPCClient<AppRouter>({
   links: [
     httpLink({
       url: 'http://localhost:4000/trpc',
@@ -22,7 +24,9 @@ const trpcClient = trpc.createClient({
     })
   ]
 });
+
 const queryClient = new QueryClient();
+
 const router = createBrowserRouter([
   {
     Component: App,
@@ -47,14 +51,20 @@ const rootNode = document.getElementById('root');
 const root = createRoot(rootNode as Element);
 root.render(
   <React.StrictMode>
-    <trpc.Provider queryClient={queryClient} client={trpcClient}>
+    <TRPCProvider queryClient={queryClient} trpcClient={trpcClient}>
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
-        <div style={{ marginLeft: '5.5rem', transform: 'scale(.7)', transformOrigin: 'bottom left' }}>
+        <div
+          style={{
+            marginLeft: '5.5rem',
+            transform: 'scale(.7)',
+            transformOrigin: 'bottom left'
+          }}
+        >
           <ReactQueryDevtools initialIsOpen position="bottom" />
         </div>
       </QueryClientProvider>
-    </trpc.Provider>
+    </TRPCProvider>
   </React.StrictMode>
 );
 

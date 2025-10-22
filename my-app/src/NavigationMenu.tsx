@@ -1,28 +1,32 @@
-import React, { useState } from 'react';
+import { LabelRounded } from '@mui/icons-material';
+import AddNarrativeIcon from '@mui/icons-material/LibraryAdd';
+import MenuIcon from '@mui/icons-material/Menu';
+import { Autocomplete, TextField } from '@mui/material';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import { TextField } from '@mui/material';
-import { Autocomplete } from '@mui/material';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
-import AddNarrativeIcon from '@mui/icons-material/LibraryAdd';
-import Menu from './menus/Menu';
+import { useQuery } from '@tanstack/react-query';
+import React, { useState } from 'react';
+import { useTRPC } from '.';
 import AddMenu from './menus/AddMenu';
-import { LabelRounded } from '@mui/icons-material';
 import AddTag from './menus/AddTag';
-import { trpc } from '.';
+import Menu from './menus/Menu';
+
 const NavigationMenu = () => {
+  const trpc = useTRPC();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [addAnchorEl, setAddAnchorEl] = useState<null | HTMLElement>(null);
   const [addTagAnchorEl, setAddTagAnchorEl] = useState<null | HTMLElement>(
     null
   );
   const [tagSearchTerm, setTagSearchTerm] = useState('');
-  const { data: options } = trpc.getTagList.useQuery({
-    searchString: tagSearchTerm
-  });
+  const { data: options } = useQuery(
+    trpc.getTagList.queryOptions({
+      searchString: tagSearchTerm
+    })
+  );
   const open = Boolean(anchorEl);
   const openAdd = Boolean(addAnchorEl);
   const openAddTag = Boolean(addTagAnchorEl);

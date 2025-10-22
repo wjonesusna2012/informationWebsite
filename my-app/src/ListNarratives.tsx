@@ -1,15 +1,22 @@
-import React from 'react';
+import { CircularProgress, Stack } from '@mui/material';
+import { useQuery } from '@tanstack/react-query';
+import { useTRPC } from '.';
 import NarrativeAccordion from './NarrativeAccordian';
-import { Stack } from '@mui/material';
-import { CircularProgress } from '@mui/material';
-import { trpc } from '.';
 import StoryGrid from './StoryGrid';
 
 const ListNarratives = () => {
-  const { data: narratives, isLoading } = trpc.getNarrativesList.useQuery();
-  const { data: narrativeStories } = trpc.getNarrativeStories.useQuery({
-    narrativeId: Array.isArray(narratives) && narratives.length > 0 ? narratives[0]._id : ''
-  });
+  const trpc = useTRPC();
+  const { data: narratives, isLoading } = useQuery(
+    trpc.getNarrativesList.queryOptions()
+  );
+  const { data: narrativeStories } = useQuery(
+    trpc.getNarrativeStories.queryOptions({
+      narrativeId:
+        Array.isArray(narratives) && narratives.length > 0
+          ? narratives[0]._id
+          : ''
+    })
+  );
   if (isLoading) return <CircularProgress />;
   return (
     <Stack spacing={2}>

@@ -19,8 +19,9 @@ import RHFDatePicker from './RHFDatePicker';
 import { AddStoryType, addStorySchema } from '@info/schemas';
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { trpc } from '.';
+import { useTRPC } from '.';
 import { ActionTypes, DialogStateContext, DialogDispatchContext } from './contexts/DialogContext';
+import { useMutation } from '@tanstack/react-query';
 
 const DraggableAny: any = Draggable;
 function PaperComponent(props: PaperProps) {
@@ -37,11 +38,13 @@ function PaperComponent(props: PaperProps) {
 }
 
 const AddStoryDialog: React.FC<{}> = () => {
+  const trpc = useTRPC();
   const { createStory } = React.useContext(DialogStateContext);
   const dispatch = React.useContext(DialogDispatchContext);
   const [filesSaved, setFilesSaved] = React.useState<Array<string>>([]);
   const [anchorLink, setAnchorLink] = React.useState<string>('');
-  const { mutate: addStoryMutation } = trpc.addStory.useMutation();
+
+  const addStoryMutation = useMutation(trpc.addStory.mutationOptions()); 
   const methods = useForm<AddStoryType>({
     defaultValues: {
       storyTitle: '',
@@ -53,7 +56,7 @@ const AddStoryDialog: React.FC<{}> = () => {
     resolver: zodResolver(addStorySchema)
   });
   const submitStory = async (formData: AddStoryType) => {
-    addStoryMutation(formData);
+    addStoryMutation.mutate(formData);
     // setFileDialogOpen(false);
   };
   return (

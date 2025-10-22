@@ -1,21 +1,19 @@
-import React from 'react';
 // import NarrativeAccordion from './NarrativeAccordian';
-import { Stack } from '@mui/material';
-import { CircularProgress } from '@mui/material';
-import { trpc } from '.';
+import { CircularProgress, Stack } from '@mui/material';
+import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
+import { useTRPC } from '.';
 
 const DisplayNarrative = () => {
+  const trpc = useTRPC();
   const { narrativeId } = useParams<{ narrativeId: string }>();
-  const { data: narratives, isLoading } = trpc.getNarrativeStories.useQuery({
-    narrativeId: narrativeId ?? '',
-  });
+  const greetQueryResult = useQuery(
+    trpc.getNarrativeStories.queryOptions({ narrativeId: narrativeId ?? '' })
+  );
+  const { data: narratives, isLoading } = greetQueryResult;
   console.log(narratives);
   if (isLoading) return <CircularProgress />;
-  return (
-    <Stack>
-    </Stack>
-  );
+  return <Stack></Stack>;
 };
 
 export default DisplayNarrative;

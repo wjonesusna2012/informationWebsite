@@ -1,6 +1,5 @@
 import { ObjectId } from 'mongodb';
 import { router, publicProcedure } from './trpc';
-import { dbMiddleware } from './dbMiddleware';
 import {
   addStorySchema,
   addStoryResponseSchema,
@@ -20,7 +19,8 @@ import {
   addTagToStorySchema,
   StoryMongoSchemaType,
   TagMongoSchemaType
-} from '@info/schemas';
+} from '../schemas';
+
 import { z } from 'zod';
 import { establishConnectionToCollection } from './utils/db';
 import { narrativeWithStoriesAggregation } from '../mongoQueries';
@@ -29,8 +29,8 @@ import { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
 import { TRPCError } from '@trpc/server';
 
 
-const appRouter: ReturnType<typeof router> = router({
-  addStory: dbMiddleware
+export const appRouter = router({
+  addStory: publicProcedure
     .input(addStorySchema)
     .output(addStoryResponseSchema)
     .mutation(async ({ ctx, input }) => {
@@ -51,7 +51,7 @@ const appRouter: ReturnType<typeof router> = router({
         tags: [] // Add default value for optional tags if needed
       };
     }),
-  addNarrative: dbMiddleware
+  addNarrative: publicProcedure
     .input(addNarrativeSchema)
     .output(addNarrativeResponseSchema)
     .mutation(async ({ ctx, input }) => {
@@ -71,7 +71,7 @@ const appRouter: ReturnType<typeof router> = router({
         tags: [] // Add default value for optional tags if needed
       };
     }),
-  addTag: dbMiddleware
+  addTag: publicProcedure
     .input(addTagSchema)
     .output(addTagResponseSchema)
     .mutation(async ({ ctx, input }) => {
@@ -112,7 +112,7 @@ const appRouter: ReturnType<typeof router> = router({
       }
     }),
 
-  addTagsToNarrative: dbMiddleware
+  addTagsToNarrative: publicProcedure
     .input(addTagToNarrativeSchema)
     .mutation(async ({ ctx, input }) => {
       const { narrativeId, tags } = input;
@@ -152,7 +152,7 @@ const appRouter: ReturnType<typeof router> = router({
       throw generateMongoQueryError('Unknown error occurred');
     }),
 
-  getTagList: dbMiddleware.input(getTagsQuerySchema).query(async ({ ctx, input }) => {
+  getTagList: publicProcedure.input(getTagsQuerySchema).query(async ({ ctx, input }) => {
     const { searchString } = input;
     const collection = ctx.db.collection('tags');
     const validStringForSearch = !!searchString && searchString !== '';
@@ -167,7 +167,7 @@ const appRouter: ReturnType<typeof router> = router({
     return results;
   }),
 
-  addStoryToNarrative: dbMiddleware
+  addStoryToNarrative: publicProcedure
     .input(addStoryToNarrative)
     .mutation(async ({ ctx, input }) => {
       const { narrativeId, storyId } = input;
@@ -193,7 +193,7 @@ const appRouter: ReturnType<typeof router> = router({
       return results;
     }),
 
-  getNarrativeStories: dbMiddleware
+  getNarrativeStories: publicProcedure
     .input(getNarrativeStoriesQuerySchema)
     .output(getNarrativeStoriesResponseSchema)
     .query(async ({ ctx, input }) => {
@@ -207,7 +207,7 @@ const appRouter: ReturnType<typeof router> = router({
       return results;
     }),
 
-  addTagsToStory: dbMiddleware
+  addTagsToStory: publicProcedure
     .input(addTagToStorySchema)
     .mutation(async ({ ctx, input }) => {
       const { storyId, tags } = input;

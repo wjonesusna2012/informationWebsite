@@ -1,17 +1,20 @@
-import * as React from 'react';
-import Menu from '@mui/material/Menu';
-import { MenuInterface } from '../interfaces';
-import { Box, Button, Typography } from '@mui/material';
-import { FormProvider, useForm } from 'react-hook-form';
-import RHFTextField from '../RHFTextField';
-import { addTagSchema, AddTagType } from '@info/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { trpc } from '..';
+import { addTagSchema, AddTagType } from '@info/schemas';
+import { Box, Button, Typography } from '@mui/material';
+import Menu from '@mui/material/Menu';
+import { useMutation } from '@tanstack/react-query';
+import * as React from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
+import { useTRPC } from '..';
+import { MenuInterface } from '../interfaces';
+import RHFTextField from '../RHFTextField';
+
 const AddTag: React.FC<MenuInterface> = ({
   open,
   anchorElement,
   closeHandler
 }) => {
+  const trpc = useTRPC();
   const methods = useForm<AddTagType>({
     defaultValues: {
       tagName: '',
@@ -20,7 +23,7 @@ const AddTag: React.FC<MenuInterface> = ({
     reValidateMode: 'onChange',
     resolver: zodResolver(addTagSchema)
   });
-  const { mutate: addTagMutation } = trpc.addTag.useMutation();
+  const { mutate: addTagMutation } = useMutation(trpc.addTag.mutationOptions());
   const submitTag = async (formData: AddTagType) => {
     addTagMutation(formData);
     closeHandler();

@@ -1,21 +1,22 @@
-import React from 'react';
-import Accordion from '@mui/material/Accordion';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import { NarrativeAccordianProps } from './interfaces';
+import { Add, ExpandMore, NoteAdd } from '@mui/icons-material';
 import {
-  Grid,
-  Chip,
-  Typography,
-  IconButton,
-  TextField,
   Autocomplete,
   Box,
-  Button
+  Button,
+  Chip,
+  Grid,
+  IconButton,
+  TextField,
+  Typography
 } from '@mui/material';
+import Accordion from '@mui/material/Accordion';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import AccordionSummary from '@mui/material/AccordionSummary';
 import { createFilterOptions } from '@mui/material/Autocomplete';
-import { Add, ExpandMore, NoteAdd } from '@mui/icons-material';
-import { trpc } from '.';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import React from 'react';
+import { useTRPC } from '.';
+import { NarrativeAccordianProps } from './interfaces';
 
 const NarrativeAccordion = ({
   narrativeId,
@@ -25,12 +26,13 @@ const NarrativeAccordion = ({
   abbreviation,
   children
 }: NarrativeAccordianProps) => {
+  const trpc = useTRPC();
   const [displayTagAddition, setDisplayTagAddition] = React.useState(false);
   const [newTag, setNewTag] = React.useState('');
   const [inputValue, setInputValue] = React.useState('');
 
-  const { data: options } = trpc.getTagList.useQuery({});
-  const addTagsToNarrative = trpc.addTagsToNarrative.useMutation();
+  const { data: options } = useQuery(trpc.getTagList.queryOptions({}));
+  const addTagsToNarrative = useMutation(trpc.addTagsToNarrative.mutationOptions());
 
   const handleAddTag = async () => {
     addTagsToNarrative.mutate({
