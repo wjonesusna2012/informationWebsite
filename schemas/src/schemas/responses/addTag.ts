@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { addTagSchema } from '../requests';
-import { mongoMarkupSchema } from '../common';
+import { mongoMarkupSchema } from '../mongoSchema';
 
 export const addTagResponseSchema = addTagSchema.merge(mongoMarkupSchema);
 

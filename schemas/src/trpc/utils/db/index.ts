@@ -15,3 +15,5 @@ export const genericPipelineLookupFromCollection = async (
 ) => {
   return await collection.aggregate(pipeline).toArray();
 };
+
+export * from './piplines';

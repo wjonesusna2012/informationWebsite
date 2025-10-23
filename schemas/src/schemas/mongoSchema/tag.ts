@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { mongoMarkupSchema } from '../common';
+import { mongoMarkupSchema } from './common';
 import { addTagResponseSchema } from '../responses/addTag';
 
 export const tagMongoSchema = addTagResponseSchema;

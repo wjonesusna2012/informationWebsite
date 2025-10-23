@@ -1,5 +1,6 @@
 {
-  "extends": "@tsconfig/node14/tsconfig.json",
+  "extends": "@tsconfig/node18/tsconfig.json",
+  "strict": false,
   "compilerOptions": {
     "outDir": "./build"
   }

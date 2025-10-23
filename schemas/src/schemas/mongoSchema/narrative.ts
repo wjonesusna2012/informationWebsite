@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { mongoMarkupSchema } from '../common';
+import { mongoMarkupSchema } from './common';
 import { addNarrativeResponseSchema } from '../responses';
 
 export const narrativeMongoSchema = addNarrativeResponseSchema

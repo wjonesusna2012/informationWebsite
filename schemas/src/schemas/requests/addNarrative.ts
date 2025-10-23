@@ -14,4 +14,3 @@ export const addNarrativeSchema = z.object({
 });
 
 export type AddNarrativeType = z.infer<typeof addNarrativeSchema>;
-

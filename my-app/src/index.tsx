@@ -9,9 +9,16 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createTRPCClient, httpLink } from '@trpc/client';
 import { createTRPCContext } from '@trpc/tanstack-react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { type AppRouter } from '@info/schemas';
 import SuperJSON from 'superjson';
 import DisplayNarrative from './DisplayNarrative';
+// Import zod first to ensure it's available when schemas package loads
+import * as zod from 'zod';
+import { type AppRouter } from '@info/schemas';
+
+// Make zod globally available for the schemas package
+if (typeof window !== 'undefined') {
+  (window as any).zod = zod;
+}
 
 export const { TRPCProvider, useTRPC, useTRPCClient } =
   createTRPCContext<AppRouter>();
@@ -19,7 +26,7 @@ export const { TRPCProvider, useTRPC, useTRPCClient } =
 const trpcClient = createTRPCClient<AppRouter>({
   links: [
     httpLink({
-      url: 'http://localhost:4000/trpc',
+      url: process.env.REACT_APP_TRPC_URL || 'http://localhost:4000/trpc',
       transformer: SuperJSON
     })
   ]

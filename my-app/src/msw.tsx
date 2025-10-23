@@ -1,12 +1,12 @@
 // src/msw.tsx
-import { useState } from 'react';
-import { createTRPCReact } from '@trpc/react-query';
+import { AppRouter } from '@info/schemas'; // Adjust this import to your project
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { httpLink } from '@trpc/client';
-import { AppRouter } from '@info/server'; // Adjust this import to your project
+import { createTRPCClient, httpLink } from '@trpc/client';
+import { createTRPCContext } from '@trpc/tanstack-react-query';
+import { useState } from 'react';
 import SuperJSON from 'superjson';
 
-export const api = createTRPCReact<AppRouter>();
+export const api = createTRPCContext<AppRouter>();
 
 const baseUrl = 'http://localhost:3000'; // Your API base URL
 
@@ -17,7 +17,7 @@ export const TRPCReactProvider = ({
 }) => {
   const [queryClient] = useState(() => new QueryClient());
   const [trpcClient] = useState(() =>
-    api.createClient({
+    createTRPCClient<AppRouter>({
       links: [
         httpLink({
           url: baseUrl,
@@ -29,9 +29,9 @@ export const TRPCReactProvider = ({
 
   return (
     <QueryClientProvider client={queryClient}>
-      <api.Provider client={trpcClient} queryClient={queryClient}>
+      <api.TRPCProvider trpcClient={trpcClient} queryClient={queryClient}>
         {children}
-      </api.Provider>
+      </api.TRPCProvider>
     </QueryClientProvider>
   );
 };
