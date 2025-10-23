@@ -12,6 +12,7 @@ export interface AnchorState {
 }
 
 export interface NarrativeAccordianProps {
+  narrativeId: string;
   summary: string;
   details: string;
   abbreviation: string;
