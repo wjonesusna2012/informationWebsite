@@ -2289,6 +2289,7 @@ __metadata:
     msw: "npm:^2.7.0"
     msw-storybook-addon: "npm:^2.0.4"
     msw-trpc: "npm:^2.0.0-beta.1"
+    node-polyfill-webpack-plugin: "npm:^4.1.0"
     prettier: "npm:^2.2.1"
     process: "npm:^0.11.10"
     react: "npm:^18.2.0"
