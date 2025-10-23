@@ -5,3 +5,4 @@ server/build/*
 **/storybook-static/*
 .vscode/settings.json
 .yarn/install-state.gz
+server/build/*
