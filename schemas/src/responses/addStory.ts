@@ -1,13 +1,9 @@
 import { z } from 'zod';
+import { addStorySchema } from '../requests';
+import { mongoMarkupSchema } from '../common';
 
-export const addStoryResponseSchema = z.object({
-  _id: z.string(),
-  storyTitle: z.string(),
-  date: z.date(),
-  link: z.string(),
-  summary: z.string(),
-  createdAt: z.date(),
-  createdBy: z.string(),
-});
+export const addStoryResponseSchema = addStorySchema.merge(mongoMarkupSchema);
+
+export type AddStoryResponseType = z.infer<typeof addStoryResponseSchema>
 
 export default addStoryResponseSchema;

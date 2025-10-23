@@ -1,9 +1,10 @@
 import { z } from 'zod';
 import { mongoMarkupSchema } from '../common';
-import { addStorySchema } from '../requests';
+import { addStoryResponseSchema } from '../responses';
 
-export const storyMongoSchema = addStorySchema
-  .merge(mongoMarkupSchema)
+export const storyMongoSchema = addStoryResponseSchema
   .merge(z.object({ tags: z.array(z.string()).optional() }));
 
 export type StoryMongoSchemaType = z.infer<typeof storyMongoSchema>;
+
+export default storyMongoSchema;
