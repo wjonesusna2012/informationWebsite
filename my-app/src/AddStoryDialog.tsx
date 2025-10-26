@@ -9,9 +9,9 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import DialogTitle from '@mui/material/DialogTitle';
 import Paper, { PaperProps } from '@mui/material/Paper';
 import Draggable from 'react-draggable';
-import { ImageList, ImageListItem, ImageListItemBar } from '@mui/material';
-import IconButton from '@mui/material/IconButton';
-import DeleteIcon from '@mui/icons-material/Delete';
+// import { ImageList, ImageListItem, ImageListItemBar } from '@mui/material';
+// import IconButton from '@mui/material/IconButton';
+// import DeleteIcon from '@mui/icons-material/Delete';
 import StoryIcon from '@mui/icons-material/AutoStoriesRounded';
 import AnchorInputAndPreview from './AnchorInputAndPreview';
 import RHFTextField from './RHFTextField';
@@ -39,7 +39,7 @@ function PaperComponent(props: PaperProps) {
 const AddStoryDialog: React.FC<{}> = () => {
   const { createStory } = React.useContext(DialogContext);
   const dispatch = React.useContext(DialogDispatchContext);
-  const [filesSaved, setFilesSaved] = React.useState<Array<string>>([]);
+  // const [filesSaved, setFilesSaved] = React.useState<Array<string>>([]);
   const [anchorLink, setAnchorLink] = React.useState<string>('');
   const { mutate: addStoryMutation } = trpc.addStory.useMutation();
   const methods = useForm<AddStoryType>({
@@ -77,6 +77,12 @@ const AddStoryDialog: React.FC<{}> = () => {
             <LocalizationProvider dateAdapter={AdapterLuxon}>
               <RHFDatePicker label="Date" name="date" />
             </LocalizationProvider>
+            <AnchorInputAndPreview
+              anchorLink={anchorLink}
+              setAnchorLink={(l) => {
+                setAnchorLink(l);
+              }}
+            />
             <RHFTextField
               label="Summary"
               name="summary"
@@ -85,7 +91,7 @@ const AddStoryDialog: React.FC<{}> = () => {
                 minRows: 5
               }}
             />
-            <Button variant="contained" component="label">
+            {/* <Button variant="contained" component="label">
               Upload Image
               <input
                 hidden
@@ -105,8 +111,8 @@ const AddStoryDialog: React.FC<{}> = () => {
                 }}
                 accept="images/*"
               />
-            </Button>
-            {filesSaved!.length > 0 && (
+            </Button> */}
+            {/* {filesSaved!.length > 0 && (
               <ImageList cols={3}>
                 {filesSaved!.map((file) => (
                   <ImageListItem>
@@ -129,13 +135,7 @@ const AddStoryDialog: React.FC<{}> = () => {
                   </ImageListItem>
                 ))}
               </ImageList>
-            )}
-            <AnchorInputAndPreview
-              anchorLink={anchorLink}
-              setAnchorLink={(l) => {
-                setAnchorLink(l);
-              }}
-            />
+            )} */}
           </Stack>
         </FormProvider>
       </DialogContent>

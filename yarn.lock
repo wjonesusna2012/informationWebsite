@@ -14217,6 +14217,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"prettier-plugin-organize-imports@npm:^4.3.0":
+  version: 4.3.0
+  resolution: "prettier-plugin-organize-imports@npm:4.3.0"
+  peerDependencies:
+    prettier: ">=2.0"
+    typescript: ">=2.9"
+    vue-tsc: ^2.1.0 || 3
+  peerDependenciesMeta:
+    vue-tsc:
+      optional: true
+  checksum: 10c0/57e5a3e611f1da6614fe1228d306b9a361d9249140abfdfcf21cffc9de13bda204c01f44bed0396786269541b63e12b05e1eab03e43d2e201320e4211af88bc6
+  languageName: node
+  linkType: hard
+
 "prettier@npm:^2.2.1, prettier@npm:^2.7.1":
   version: 2.8.8
   resolution: "prettier@npm:2.8.8"
@@ -15253,6 +15267,7 @@ __metadata:
     eslint-config-prettier: "npm:^8.5.0"
     eslint-plugin-prettier: "npm:^4.2.1"
     prettier: "npm:^2.7.1"
+    prettier-plugin-organize-imports: "npm:^4.3.0"
   languageName: unknown
   linkType: soft
 

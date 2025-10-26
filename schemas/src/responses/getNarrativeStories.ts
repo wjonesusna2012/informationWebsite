@@ -1,13 +1,12 @@
 import { z } from 'zod';
-import { narrativeMongoSchema, storyMongoSchema } from '../mongoSchema';
+import { narrativeMongoSchema } from '../mongoSchema';
 
 export const narrativeStoryEntrySchema = narrativeMongoSchema.extend({
-  stories: z.array(storyMongoSchema)
+  // This is an objectId
+  stories: z.array(z.any())
 });
 
-export const getNarrativeStoriesResponseSchema = z.array(
-  narrativeStoryEntrySchema
-);
+export const getNarrativeStoriesResponseSchema = narrativeStoryEntrySchema;
 
 export type NarrativeStoryEntrySchemaType = z.infer<
   typeof narrativeStoryEntrySchema

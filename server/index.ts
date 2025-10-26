@@ -1,38 +1,38 @@
-import express from 'express';
-import { ObjectId } from 'mongodb';
-import axios from 'axios';
-import generateHTMLNodes, { extractMetaTagsFromHTMLRoot } from './htmlParser';
-import { createContext, router, publicProcedure } from './trpc';
 import {
-  addStorySchema,
-  addStoryResponseSchema,
-  addNarrativeSchema,
   addNarrativeResponseSchema,
-  getNarrativeStoriesQuerySchema,
-  addTagResponseSchema,
-  addTagSchema,
   AddNarrativeResponseType,
-  getTagsQuerySchema,
-  AddTagResponseType,
+  addNarrativeSchema,
+  addStoryResponseSchema,
+  addStorySchema,
   addStoryToNarrative,
-  getNarrativeStoriesResponseSchema,
-  NarrativeStoryEntrySchemaType,
+  addTagResponseSchema,
+  AddTagResponseType,
+  addTagSchema,
   addTagToNarrativeSchema,
-  NarrativeMongoSchemaType,
   addTagToStorySchema,
+  getNarrativeStoriesQuerySchema,
+  getNarrativeStoriesResponseSchema,
+  getStoryResponseSchema,
+  getStorySchema,
+  getTagsQuerySchema,
+  NarrativeMongoSchemaType,
+  NarrativeStoryEntrySchemaType,
   StoryMongoSchemaType,
   TagMongoSchemaType
 } from '@info/schemas';
-import cors from 'cors';
+import { inferRouterInputs, inferRouterOutputs, TRPCError } from '@trpc/server';
 import * as trpcExpress from '@trpc/server/adapters/express';
+import axios from 'axios';
+import cors from 'cors';
+import express from 'express';
+import { ObjectId } from 'mongodb';
 import { z } from 'zod';
 import client from './database';
-import { establishConnectionToCollection } from './utils/db';
-import { pick } from 'lodash';
-import { narrativeWithStoriesAggregation } from './mongoQueries';
 import { generateMongoQueryError } from './errorDefinitions';
-import { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
-import { TRPCError } from '@trpc/server';
+import generateHTMLNodes, { extractMetaTagsFromHTMLRoot } from './htmlParser';
+import { narrativeWithStoriesAggregation } from './mongoQueries';
+import { createContext, publicProcedure, router } from './trpc';
+import { establishConnectionToCollection } from './utils/db';
 
 const appRouter = router({
   addStory: publicProcedure
@@ -167,6 +167,27 @@ const appRouter = router({
       throw generateMongoQueryError('Unknown error occurred');
     }),
 
+  getStory: publicProcedure
+    .input(getStorySchema)
+    .output(getStoryResponseSchema)
+    .query(async (opts) => {
+      const { storyId } = opts.input;
+      const db = client.db('NarrativesProject');
+      const collection = db.collection('stories');
+      const res = await collection.findOne<StoryMongoSchemaType>({
+        _id: new ObjectId(storyId)
+      });
+
+      if (!res) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: `Story with id ${storyId} not found.`
+        });
+      }
+
+      return res;
+    }),
+
   getTagList: publicProcedure.input(getTagsQuerySchema).query(async (opts) => {
     const { searchString } = opts.input;
     const db = client.db('NarrativesProject');
@@ -175,7 +196,7 @@ const appRouter = router({
     const filterObj = {
       ...(validStringForSearch
         ? { tagName: { $regex: new RegExp(`${searchString}`, 'i') } }
-        : {}),
+        : {})
     };
     const results = await collection
       .find<AddTagResponseType>(filterObj)
@@ -224,7 +245,12 @@ const appRouter = router({
           narrativeWithStoriesAggregation(new ObjectId(narrativeId))
         )
         .toArray();
-      return results;
+      if (results.length != 1) {
+        throw generateMongoQueryError(
+          `Failed to find narrative with objectId ${narrativeId}.`
+        );
+      }
+      return results[0];
     }),
 
   addTagsToStory: publicProcedure

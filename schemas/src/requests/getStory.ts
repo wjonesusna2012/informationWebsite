@@ -1,7 +1,8 @@
 import { z } from 'zod';
 
 export const getStorySchema = z.object({
-  _id: z.string().optional(),
+  storyId: z.string().optional(),
 });
 
+export type GetStoryQueryType = z.infer<typeof getStorySchema> 
 export default getStorySchema;

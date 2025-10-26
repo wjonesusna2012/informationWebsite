@@ -1,33 +1,35 @@
-import React from 'react';
-import Accordion from '@mui/material/Accordion';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import { NarrativeAccordianProps } from './interfaces';
+import { Add, ExpandMore, NoteAdd } from '@mui/icons-material';
 import {
-  Grid,
-  Chip,
-  Typography,
-  IconButton,
-  TextField,
   Autocomplete,
   Box,
-  Button
+  Button,
+  Chip,
+  Grid,
+  IconButton,
+  TextField,
+  Typography
 } from '@mui/material';
+import Accordion from '@mui/material/Accordion';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import AccordionSummary from '@mui/material/AccordionSummary';
 import { createFilterOptions } from '@mui/material/Autocomplete';
-import { Add, ExpandMore, NoteAdd } from '@mui/icons-material';
+import React from 'react';
 import { trpc } from '.';
+import { NarrativeAccordianProps } from './interfaces';
+import StoryGrid from './StoryGrid';
 
 const NarrativeAccordion = ({
   narrativeId,
   tags,
   summary,
-  details,
-  abbreviation,
-  children
+  details
 }: NarrativeAccordianProps) => {
   const [displayTagAddition, setDisplayTagAddition] = React.useState(false);
   const [newTag, setNewTag] = React.useState('');
   const [inputValue, setInputValue] = React.useState('');
+  const { data: narrativeStories } = trpc.getNarrativeStories.useQuery({
+    narrativeId
+  });
 
   const { data: options } = trpc.getTagList.useQuery({});
   const addTagsToNarrative = trpc.addTagsToNarrative.useMutation();
@@ -142,7 +144,7 @@ const NarrativeAccordion = ({
           <Typography align="left" variant="h6">
             {details}
           </Typography>
-          {!!children && children}
+          <StoryGrid cardArray={narrativeStories?.stories ?? []} />
         </AccordionDetails>
       </Accordion>
     </>

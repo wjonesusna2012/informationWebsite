@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import Card from '@mui/material/Card';
-import CardMedia from '@mui/material/CardMedia';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
@@ -15,7 +14,6 @@ const TopicCard = ({
   selected,
   toggleStory
 }: TopicCardProps) => {
-  const [loaded, setLoaded] = useState(false);
   return (
     <Card
       variant="outlined"
@@ -27,21 +25,6 @@ const TopicCard = ({
       }}
       onClick={() => toggleStory(id)}
     >
-      <CardMedia
-        component="img"
-        image="https://picsum.photos/300/300"
-        alt="Test Alt Text"
-        onLoad={() => {
-          setLoaded(true);
-        }}
-        style={loaded ? {} : { display: 'none' }}
-      />
-      <CardMedia
-        component="img"
-        image="web.png"
-        alt="Test Alt Text"
-        style={loaded ? { display: 'none' } : {}}
-      />
       <CardContent>
         <Typography variant="h5" component="div">
           {postTitle}
@@ -55,7 +38,7 @@ const TopicCard = ({
       </CardContent>
       <CardActions>
         <Button size="small">
-          <a style={{ textDecoration: 'none' }} href="google.com">
+          <a style={{ textDecoration: 'none' }} href="https://www.google.com">
             Learn More
           </a>
         </Button>

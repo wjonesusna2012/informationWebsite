@@ -46,5 +46,5 @@ export interface TopicCardData {
 }
 
 export interface StoryGridProps {
-  cardArray: Array<TopicCardProps>;
+  cardArray: Array<string>;
 }

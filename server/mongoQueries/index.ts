@@ -8,22 +8,9 @@ export const narrativeWithStoriesAggregation = (narrativeId: ObjectId) => {
       }
     },
     {
-      $lookup: {
-        from: 'stories',
-        localField: 'storyId',
-        foreignField: '_id',
-        as: 'story'
-      }
-    },
-    {
-      $unwind: {
-        path: '$story'
-      }
-    },
-    {
       $project: {
         narrativeId: 1,
-        story: 1,
+        storyId: 1,
         _id: 0
       }
     },
@@ -34,7 +21,7 @@ export const narrativeWithStoriesAggregation = (narrativeId: ObjectId) => {
           $first: '$narrativeId'
         },
         stories: {
-          $push: '$story'
+          $push: '$storyId'
         }
       }
     },
