@@ -8,13 +8,14 @@ import StoryGrid from './StoryGrid';
 const ListNarratives = () => {
   const { data: narratives, isLoading } = trpc.getNarrativesList.useQuery();
   const { data: narrativeStories } = trpc.getNarrativeStories.useQuery({
-    narrativeId: Array.isArray(narratives) ? narratives[0]._id : ''
+    narrativeId: Array.isArray(narratives) && narratives.length > 0 ? narratives[0]._id : ''
   });
   if (isLoading) return <CircularProgress />;
   return (
     <Stack spacing={2}>
       {narrativeStories?.map((n) => (
         <NarrativeAccordion
+          narrativeId={n._id}
           tags={n.tags ?? ['Topic 1', 'Big Tournament Wins']}
           summary={n.title as string}
           details={n.summary as string}

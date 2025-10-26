@@ -13,14 +13,15 @@ import {
   addTagSchema,
   AddNarrativeResponseType,
   getTagsQuerySchema,
-  addTagToNarrativeResponseSchema,
   AddTagResponseType,
   addStoryToNarrative,
   getNarrativeStoriesResponseSchema,
   NarrativeStoryEntrySchemaType,
   addTagToNarrativeSchema,
-  AddTagToNarrativeResponseType,
-  NarrativeMongoSchemaType
+  NarrativeMongoSchemaType,
+  addTagToStorySchema,
+  StoryMongoSchemaType,
+  TagMongoSchemaType
 } from '@info/schemas';
 import cors from 'cors';
 import * as trpcExpress from '@trpc/server/adapters/express';
@@ -31,6 +32,7 @@ import { pick } from 'lodash';
 import { narrativeWithStoriesAggregation } from './mongoQueries';
 import { generateMongoQueryError } from './errorDefinitions';
 import { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
+import { TRPCError } from '@trpc/server';
 
 const appRouter = router({
   addStory: publicProcedure
@@ -46,13 +48,14 @@ const appRouter = router({
         createdBy: 'Phil N. Later'
       });
       return {
-        _id: 'Test ID',
+        _id: 'Test ID' as string, // Explicitly define _id as a string
         storyTitle: 'Title Test',
         summary: "Lorem Ipsum I forget I don't have internet",
         link: '',
         date: new Date(),
         createdAt: new Date(),
-        createdBy: 'Yours Truly'
+        createdBy: 'Yours Truly',
+        tags: [] // Add default value for optional tags if needed
       };
     }),
   addNarrative: publicProcedure
@@ -68,12 +71,13 @@ const appRouter = router({
         createdBy: 'Phil N. Later'
       });
       return {
-        _id: 'Test ID',
+        _id: 'Test ID', // Explicitly define _id as a string
         title: 'Title Test',
         summary: "Lorem Ipsum I forget I don't have internet",
         abbreviation: 'EXO2020',
         createdAt: new Date(),
-        createdBy: 'Yours Truly'
+        createdBy: 'Yours Truly',
+        tags: [] // Add default value for optional tags if needed
       };
     }),
   addTag: publicProcedure
@@ -83,24 +87,44 @@ const appRouter = router({
       await client.connect();
       const db = client.db('NarrativesProject');
       const collection = db.collection('tags');
-      const { insertedId } = await collection.insertOne({
-        ...opts.input,
-        createdAt: new Date(),
-        createdBy: 'Phil N. Later'
-      });
-      const insertedObject = await collection.findOne(insertedId);
-      return {
-        _id: 'Test ID',
-        tagTitle: 'Title Test',
-        tagName: "Lorem Ipsum I forget I don't have internet",
-        createdAt: new Date(),
-        createdBy: 'Yours Truly'
-      };
+      try {
+        const { insertedId, acknowledged } = await collection.insertOne({
+          ...opts.input,
+          createdAt: new Date(),
+          createdBy: 'Phil N. Later'
+        });
+        if (!acknowledged) {
+          throw new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: `Write to MongoDb instance not acknowledged for tag: ${insertedId}`
+          });
+        }
+        const insertedObject = await collection.findOne<TagMongoSchemaType>(
+          insertedId
+        );
+
+        if (!insertedObject) {
+          throw new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: `Failed to retrieve newly created tag with id: ${insertedId}`
+          });
+        }
+
+        return insertedObject;
+      } catch (error) {
+        if (error instanceof TRPCError) {
+          throw error;
+        }
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'An unexpected error occurred while adding the tag.',
+          cause: error
+        });
+      }
     }),
 
   addTagsToNarrative: publicProcedure
     .input(addTagToNarrativeSchema)
-    .output(addTagToNarrativeResponseSchema)
     .mutation(async (opts) => {
       await client.connect();
       const { narrativeId, tags } = opts.input;
@@ -111,15 +135,20 @@ const appRouter = router({
         .collection('narratives')
         .findOne({ _id: narrativeObjectId });
       if (!currentNarrative) {
+        throw generateMongoQueryError(
+          `Failed to find narrative with objectId ${narrativeId}.`
+        );
       }
       const { matchedCount, modifiedCount } = await collection.updateOne(
         {
           _id: narrativeObjectId
         },
         {
-          tags,
-          updatedAt: new Date(),
-          updatedBy: 'Phil N. Later'
+          $set: {
+            tags,
+            updatedAt: new Date(),
+            updatedBy: 'Phil N. Later'
+          }
         }
       );
       if (matchedCount === 1 && modifiedCount === 1) {
@@ -135,22 +164,18 @@ const appRouter = router({
           `Failed to update narrative with objectId ${narrativeId}.`
         );
       }
-      throw 'Help';
+      throw generateMongoQueryError('Unknown error occurred');
     }),
 
   getTagList: publicProcedure.input(getTagsQuerySchema).query(async (opts) => {
-    const { searchString, userId } = opts.input;
+    const { searchString } = opts.input;
     const db = client.db('NarrativesProject');
     const collection = db.collection('tags');
-    const validUserForSearch = !!userId && userId !== '';
     const validStringForSearch = !!searchString && searchString !== '';
     const filterObj = {
       ...(validStringForSearch
         ? { tagName: { $regex: new RegExp(`${searchString}`, 'i') } }
         : {}),
-      ...(validUserForSearch
-        ? { tagName: { $regex: new RegExp(`${userId}`, 'i') } }
-        : {})
     };
     const results = await collection
       .find<AddTagResponseType>(filterObj)
@@ -200,12 +225,58 @@ const appRouter = router({
         )
         .toArray();
       return results;
+    }),
+
+  addTagsToStory: publicProcedure
+    .input(addTagToStorySchema)
+    .mutation(async (opts) => {
+      await client.connect();
+      const { storyId, tags } = opts.input;
+      const storyObjectId = new ObjectId(storyId);
+      const db = client.db('NarrativesProject');
+      const collection = db.collection('stories');
+      const currentStory = await collection.findOne({ _id: storyObjectId });
+
+      if (!currentStory) {
+        throw generateMongoQueryError(
+          `Failed to find story with objectId ${storyId}.`
+        );
+      }
+
+      const { matchedCount, modifiedCount } = await collection.updateOne(
+        {
+          _id: storyObjectId
+        },
+        {
+          $set: {
+            tags,
+            updatedAt: new Date(),
+            updatedBy: 'Phil N. Later'
+          }
+        }
+      );
+
+      if (matchedCount === 1 && modifiedCount === 1) {
+        const updatedStory = await collection.findOne<StoryMongoSchemaType>({
+          _id: storyObjectId
+        });
+
+        if (!!updatedStory) {
+          return updatedStory;
+        }
+      } else {
+        throw generateMongoQueryError(
+          `Failed to update story with objectId ${storyId}.`
+        );
+      }
+
+      throw generateMongoQueryError('Unknown error occurred');
     })
 });
 
 export type AppRouter = typeof appRouter;
 export type RouterInput = inferRouterInputs<AppRouter>;
-export type RouterOutput = inferRouterOutputs<AppRouter>; 
+export type RouterOutput = inferRouterOutputs<AppRouter>;
 
 const expressRouter = express();
 
