@@ -20,6 +20,9 @@ const NavMenu: React.FC<MenuInterface> = ({
       <Link to="/listNarratives" onClick={() => closeHandler()}>
         View Narratives
       </Link>
+      <Link to="/listStories" onClick={() => closeHandler()}>
+        View Stories
+      </Link>
     </MenuItem>
     <MenuItem>
       <Link to="/" onClick={() => closeHandler()}>Share Narratives</Link>

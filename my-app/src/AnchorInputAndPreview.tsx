@@ -6,7 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
 import React from 'react';
 import { AnchorInputProps } from './interfaces';
-import RHFTextField from './RHFTextField';
+import RHFTextField from './reactHookFormsComponents/RHFTextField';
 
 const AnchorInputAndPreview: React.FC<AnchorInputProps> = ({
   anchorLink,

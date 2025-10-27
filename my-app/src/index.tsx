@@ -32,6 +32,10 @@ const router = createBrowserRouter([
         Component: () =>  <h1>Insert here</h1>,
       },
       {
+        path: '/listStories',
+        Component: ListStories,
+      },
+      {
         path: '/listNarratives',
         Component: ListNarratives,
       },
